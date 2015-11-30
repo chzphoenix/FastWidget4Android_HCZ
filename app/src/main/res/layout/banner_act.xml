@@ -1,0 +1,19 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <com.huichongzi.fastwidget4android.widget.BannerView
+        xmlns:myapp="http://schemas.android.com/apk/res/com.huichongzi.fastwidget4android"
+        android:id="@+id/banner_act_viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        myapp:titlePaddingLeft="5dp"
+        myapp:titlePaddingTop="5dp"
+        myapp:titlePaddingBottom="5dp"
+        myapp:indicatorMarginBottom="5dp"
+        >
+
+    </com.huichongzi.fastwidget4android.widget.BannerView>
+
+</RelativeLayout>

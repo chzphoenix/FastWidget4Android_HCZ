@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="BannerView">
+        <attr name="titlePaddingLeft" format="dimension" />
+        <attr name="titlePaddingRight" format="dimension" />
+        <attr name="titlePaddingTop" format="dimension" />
+        <attr name="titlePaddingBottom" format="dimension" />
+        <attr name="titleColor" format="color" />
+        <attr name="titleSize" format="dimension" />
+        <attr name="titleBackgroundColor" format="color" />
+        <attr name="titleGravity" format="integer" />
+        <attr name="indicatorDrawable" format="reference"/>
+        <attr name="indicatorMarginBottom" format="dimension"/>
+        <attr name="indicatorMarginRight" format="dimension"/>
+        <attr name="indicatorMarginLeft" format="dimension"/>
+        <attr name="indicatorSpace" format="dimension"/>
+        <attr name="indicatorWidth" format="dimension"/>
+        <attr name="indicatorHeight" format="dimension"/>
+        <attr name="indicatorAlignParentRule" format="integer" />
+    </declare-styleable>
+
+</resources>
