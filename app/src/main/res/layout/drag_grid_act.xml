@@ -1,0 +1,13 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <com.huichongzi.fastwidget4android.widget.DragGridView
+        android:id="@+id/drag_grid_act_gridview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </com.huichongzi.fastwidget4android.widget.DragGridView>
+
+</RelativeLayout>

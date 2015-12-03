@@ -12,12 +12,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.huichongzi.fastwidget4android.activity.BannerActivity;
+import com.huichongzi.fastwidget4android.activity.DragGridActivity;
 import com.huichongzi.fastwidget4android.utils.DisplayUtils;
 
 
 public class MainActivity extends Activity {
-    private static final String[] names = {"循环轮播BannerView"};
-    private static final Class[] clazzs = {BannerActivity.class};
+    private static final String[] names = {"循环轮播BannerView", "可拖动排序的GridView"};
+    private static final Class[] clazzs = {BannerActivity.class, DragGridActivity.class};
 
     private ListView list;
     @Override

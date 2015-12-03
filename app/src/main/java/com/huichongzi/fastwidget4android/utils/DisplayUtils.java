@@ -19,10 +19,7 @@ public class DisplayUtils {
      */
     public static float getDensity(Context context) {
         if (mDensity == 0) {
-            WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-            DisplayMetrics displayMetrics = new DisplayMetrics();
-            windowManager.getDefaultDisplay().getMetrics(displayMetrics);
-            mDensity = displayMetrics.density;
+            initDisplay(context);
         }
         return mDensity;
     }
@@ -35,10 +32,7 @@ public class DisplayUtils {
      */
     public static int getDensityDpi(Context context) {
         if(mDensityDpi == 0) {
-            WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-            DisplayMetrics displayMetrics = new DisplayMetrics();
-            windowManager.getDefaultDisplay().getMetrics(displayMetrics);
-            mDensityDpi = displayMetrics.densityDpi;
+            initDisplay(context);
         }
         return mDensityDpi;
     }
@@ -52,10 +46,7 @@ public class DisplayUtils {
      */
     public static int getDisplayW(Context context) {
         if(mDensityW == 0) {
-            WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-            DisplayMetrics displayMetrics = new DisplayMetrics();
-            windowManager.getDefaultDisplay().getMetrics(displayMetrics);
-            mDensityW = displayMetrics.widthPixels;
+            initDisplay(context);
         }
         return mDensityW;
     }
@@ -68,12 +59,25 @@ public class DisplayUtils {
      */
     public static int getDisplayH(Context context) {
         if(mDensityH == 0) {
-            WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-            DisplayMetrics displayMetrics = new DisplayMetrics();
-            windowManager.getDefaultDisplay().getMetrics(displayMetrics);
-            mDensityH = displayMetrics.heightPixels;
+            initDisplay(context);
         }
         return mDensityH;
+    }
+
+    private static void initDisplay(Context context){
+        WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        windowManager.getDefaultDisplay().getMetrics(displayMetrics);
+        mDensity = displayMetrics.density;
+        mDensityDpi = displayMetrics.densityDpi;
+        if(displayMetrics.widthPixels > displayMetrics.heightPixels){
+            mDensityW = displayMetrics.heightPixels;
+            mDensityH = displayMetrics.widthPixels;
+        }
+        else{
+            mDensityH = displayMetrics.heightPixels;
+            mDensityW = displayMetrics.widthPixels;
+        }
     }
 
     /**
