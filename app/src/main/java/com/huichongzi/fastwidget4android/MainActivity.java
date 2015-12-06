@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
@@ -43,7 +44,7 @@ public class MainActivity extends Activity {
             public View getView(int position, View convertView, ViewGroup parent) {
                 TextView view = new TextView(MainActivity.this);
                 view.setText(names[position]);
-                ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DisplayUtils.dip2px(MainActivity.this, 40));
+                AbsListView.LayoutParams params = new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT, DisplayUtils.dip2px(MainActivity.this, 40));
                 view.setLayoutParams(params);
                 view.setGravity(Gravity.CENTER);
                 return view;

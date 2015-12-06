@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.TextView;
 
 import com.huichongzi.fastwidget4android.R;
@@ -46,7 +47,7 @@ public class DragGridActivity extends Activity {
 			TextView view  = new TextView(DragGridActivity.this);
 			view.setText(mData.get(position).id + "号项目项目项目");
 			view.setGravity(Gravity.CENTER);
-			ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DisplayUtils.dip2px(DragGridActivity.this, 60));
+			AbsListView.LayoutParams params = new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT, DisplayUtils.dip2px(DragGridActivity.this, 60));
 			view.setLayoutParams(params);
 			return view;
 		}

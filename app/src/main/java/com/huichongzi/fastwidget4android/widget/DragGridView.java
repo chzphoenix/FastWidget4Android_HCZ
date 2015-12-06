@@ -13,6 +13,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
@@ -27,6 +28,13 @@ public class DragGridView extends FrameLayout implements AdapterView.OnItemLongC
     private static final int HANDLE_WHAT_SCROLL_UP = 0x100;
     private static final int HANDLE_WHAT_SCROLL_DOWN = 0x101;
     private static final int HANDLE_WHAT_STAY = 0x102;
+    private static final int HANDLE_WHAT_CHANGE_ITEM = 0x103;
+    private static final int HANDLE_WHAT_TOUCH_UP = 0x104;
+    /**
+     * 子控件的类型
+     * 1、是重新排序时用于动画的临时view
+     */
+    private static final int CHILD_TYPE_TMP_CHANGE_ITEM = 1;
     /**
      * 长按后拖拽view时view的放大效果
      */
@@ -36,9 +44,17 @@ public class DragGridView extends FrameLayout implements AdapterView.OnItemLongC
      */
     private static final long DRAG_STAY_TIME = 500;
     /**
+     * 重新排序的动画时间
+     */
+    private static final long CHANE_ANIM_TIME = 200;
+    /**
      * 是否是拖拽模式
      */
     private boolean isDragModel;
+    /**
+     * 是否是排序动画状态
+     */
+    private boolean isItemChanging;
     private float mDragTmpX;
     private float mDragTmpY;
     private int mDragTmpPostion;
@@ -98,6 +114,10 @@ public class DragGridView extends FrameLayout implements AdapterView.OnItemLongC
 
     public GridView getGridView(){
         return mGridView;
+    }
+
+    public void setItemChanging(boolean isChanging){
+        isItemChanging = isChanging;
     }
 
     @Override
@@ -165,6 +185,7 @@ public class DragGridView extends FrameLayout implements AdapterView.OnItemLongC
             @Override
             public void onAnimationStart(Animator animation) {
             }
+
             @Override
             public void onAnimationEnd(Animator animation) {
                 //回弹动画结束后移出拖拽view，并且将隐藏的item显示
@@ -172,9 +193,11 @@ public class DragGridView extends FrameLayout implements AdapterView.OnItemLongC
                 mDragGridAdapter.setCurrentDraging(-1);
                 mDragGridAdapter.notifyDataSetChanged();
             }
+
             @Override
             public void onAnimationCancel(Animator animation) {
             }
+
             @Override
             public void onAnimationRepeat(Animator animation) {
             }
@@ -237,7 +260,17 @@ public class DragGridView extends FrameLayout implements AdapterView.OnItemLongC
                     mHandle.removeMessages(HANDLE_WHAT_SCROLL_DOWN);
                     mHandle.removeMessages(HANDLE_WHAT_SCROLL_UP);
                     isDragModel = false;
-                    startTouchUpAnimation();
+                    /**
+                     * 这里判断排序动画是否完成。如果完成则直接执行回弹动画；否则延迟执行。
+                     * 延迟执行的原因是：在排序动画完成后才会对adapter进行数据替换，这时才会重置正在拖拽的位置，
+                     * 如果不延迟执行，则会回弹至原位置导致错乱。
+                     */
+                    if(isItemChanging){
+                        mHandle.sendEmptyMessageDelayed(HANDLE_WHAT_TOUCH_UP, CHANE_ANIM_TIME);
+                    }
+                    else{
+                        mHandle.sendEmptyMessage(HANDLE_WHAT_TOUCH_UP);
+                    }
                     return true;
                 }
                 break;
@@ -312,8 +345,7 @@ public class DragGridView extends FrameLayout implements AdapterView.OnItemLongC
                         mDragTmpPostion = position;
                     }
                     else if(System.currentTimeMillis() - mDragPositionChangedTime > DRAG_STAY_TIME){
-                        mHandle.removeMessages(HANDLE_WHAT_STAY);
-                        mDragGridAdapter.changeToItem(position);
+                        changeItemPosition(mDragGridAdapter.getCurrentDraging(), position);
                     }
                     return true;
                 }
@@ -322,6 +354,64 @@ public class DragGridView extends FrameLayout implements AdapterView.OnItemLongC
                 break;
         }
         return super.onTouchEvent(event);
+    }
+
+    /**
+     * 将Item移到新位置并重新排序
+     * @param oldPostion
+     * @param newPosition
+     */
+    private void changeItemPosition(int oldPostion, int newPosition){
+        if(newPosition == oldPostion || newPosition < 0){
+            return;
+        }
+        //如果还在排序中，则不再执行
+        if(!isItemChanging) {
+            isItemChanging = true;
+            /**
+             * 如果原位置已经不在屏幕内，则将执行动画起始位置设为屏幕中第一或最后一个
+             * 并且隐藏起始位置，防止下一个item移动过来时出现重叠现象
+             */
+            if (oldPostion < mGridView.getFirstVisiblePosition()) {
+                oldPostion = mGridView.getFirstVisiblePosition();
+            }
+            if (oldPostion > mGridView.getLastVisiblePosition()) {
+                oldPostion = mGridView.getLastVisiblePosition();
+            }
+            mGridView.getChildAt(oldPostion - mGridView.getFirstVisiblePosition()).setVisibility(View.INVISIBLE);
+            //遍历执行移动动画
+            if (oldPostion < newPosition) {
+                for (int i = oldPostion + 1; i <= newPosition; i++) {
+                    moveItem(i, i - 1);
+                }
+            } else {
+                for (int i = oldPostion - 1; i >= newPosition; i--) {
+                    moveItem(i, i + 1);
+                }
+            }
+            //延时执行adapter数据刷新，延时目的是先让动画都执行完，防止出现错乱
+            Message msg = mHandle.obtainMessage(HANDLE_WHAT_CHANGE_ITEM, newPosition, 0);
+            mHandle.sendMessageDelayed(msg, CHANE_ANIM_TIME);
+        }
+    }
+
+    /**
+     * 将item以动画的形式移动到新位置
+     * @param oldPostion
+     * @param newPosition
+     */
+    private void moveItem(int oldPostion, int newPosition){
+        View oldView = mGridView.getChildAt(oldPostion - mGridView.getFirstVisiblePosition());
+        oldView.setVisibility(View.INVISIBLE);
+        View newView = mGridView.getChildAt(newPosition - mGridView.getFirstVisiblePosition());
+        View item = mDragGridAdapter.getItemView(oldPostion, null, null);
+        LayoutParams params = new LayoutParams(oldView.getWidth(), oldView.getHeight());
+        item.setTag(CHILD_TYPE_TMP_CHANGE_ITEM);
+        addView(item, params);
+        TranslateAnimation animation = new TranslateAnimation(oldView.getX(), newView.getX(), oldView.getY(), newView.getY());
+        animation.setDuration(CHANE_ANIM_TIME);
+        animation.setFillAfter(true);
+        item.startAnimation(animation);
     }
 
     /**
@@ -372,8 +462,26 @@ public class DragGridView extends FrameLayout implements AdapterView.OnItemLongC
                     }
                     break;
                 case HANDLE_WHAT_STAY:
-                    //替换位置
-                    mDragGridView.getAdapter().changeToItem(msg.arg1);
+                    //开始替换位置动画
+                    mDragGridView.changeItemPosition(mDragGridView.getAdapter().getCurrentDraging(), msg.arg1);
+                    break;
+                case HANDLE_WHAT_CHANGE_ITEM:
+                    /**
+                     * 替换位置动画后的处理，先移除临时用于动画的view，然后替换adapter数据并刷新
+                     */
+                    for(int i = 0; i < mDragGridView.getChildCount(); i++){
+                        Object obj = mDragGridView.getChildAt(i).getTag();
+                        if(obj != null && (int)obj == CHILD_TYPE_TMP_CHANGE_ITEM){
+                            mDragGridView.removeViewAt(i);
+                            i--;
+                        }
+                    }
+                    mDragGridView.getAdapter().changeItemPosition(msg.arg1);
+                    mDragGridView.setItemChanging(false);
+                    break;
+                case HANDLE_WHAT_TOUCH_UP:
+                    //松开后回弹动画
+                    mDragGridView.startTouchUpAnimation();
                     break;
             }
         }
@@ -432,7 +540,7 @@ public class DragGridView extends FrameLayout implements AdapterView.OnItemLongC
          * 替换位置，将拖拽的item放在目标位置，目标位置及中间的item依次前移或后移
          * @param newPosition 目标位置
          */
-        protected synchronized final void changeToItem(int newPosition){
+        protected synchronized final void changeItemPosition(int newPosition){
             if(newPosition == mCurrentDraging || newPosition < 0){
                 return;
             }
