@@ -22,6 +22,7 @@ import android.widget.GridView;
 import java.util.List;
 
 /**
+ * 可拖动排序的gridview
  * Created by chz on 2015/12/1.
  */
 public class DragGridView extends FrameLayout implements AdapterView.OnItemLongClickListener{

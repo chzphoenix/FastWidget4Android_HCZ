@@ -15,8 +15,9 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".activity.BannerActivity"/>
-        <activity android:name=".activity.DragGridActivity"/>
+        <activity android:name=".activity.BannerViewActivity"/>
+        <activity android:name=".activity.DragGridViewActivity"/>
+        <activity android:name=".activity.FolioListViewActivity"/>
     </application>
 
 </manifest>

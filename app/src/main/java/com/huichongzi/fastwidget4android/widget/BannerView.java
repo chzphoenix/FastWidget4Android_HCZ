@@ -29,6 +29,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 轮播组件
+ * 无限循环轮播，自动轮播，支持显示标题或位置标识
  * Created by chz on 2015/11/26.
  */
 public class BannerView extends RelativeLayout {

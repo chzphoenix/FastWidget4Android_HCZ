@@ -17,13 +17,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class DragGridActivity extends Activity {
+public class DragGridViewActivity extends Activity {
 
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.drag_grid_act);
+		setContentView(R.layout.drag_gridview_act);
 		initView();
 	}
 
@@ -44,10 +44,10 @@ public class DragGridActivity extends Activity {
 
 		@Override
 		public View getItemView(int position, View convertView, ViewGroup parent) {
-			TextView view  = new TextView(DragGridActivity.this);
+			TextView view  = new TextView(DragGridViewActivity.this);
 			view.setText(mData.get(position).id + "号项目项目项目");
 			view.setGravity(Gravity.CENTER);
-			AbsListView.LayoutParams params = new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT, DisplayUtils.dip2px(DragGridActivity.this, 60));
+			AbsListView.LayoutParams params = new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT, DisplayUtils.dip2px(DragGridViewActivity.this, 60));
 			view.setLayoutParams(params);
 			return view;
 		}
