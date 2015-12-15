@@ -15,12 +15,14 @@ import android.widget.TextView;
 import com.huichongzi.fastwidget4android.activity.BannerViewActivity;
 import com.huichongzi.fastwidget4android.activity.DragGridViewActivity;
 import com.huichongzi.fastwidget4android.activity.FolioListViewActivity;
+import com.huichongzi.fastwidget4android.activity.TestActivity;
+import com.huichongzi.fastwidget4android.activity.WaveBallProgressActivity;
 import com.huichongzi.fastwidget4android.utils.DisplayUtils;
 
 
 public class MainActivity extends Activity {
-    private static final String[] names = {"循环轮播BannerView", "可拖动排序的GridView", "翻转展示的ListView"};
-    private static final Class[] clazzs = {BannerViewActivity.class, DragGridViewActivity.class, FolioListViewActivity.class};
+    private static final String[] names = {"循环轮播BannerView", "可拖动排序的GridView", "翻转展示的ListView", "水晶球进度条", "测试"};
+    private static final Class[] clazzs = {BannerViewActivity.class, DragGridViewActivity.class, FolioListViewActivity.class, WaveBallProgressActivity.class, TestActivity.class};
 
     private ListView list;
     @Override
