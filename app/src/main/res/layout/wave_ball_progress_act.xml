@@ -6,6 +6,6 @@
 
     <com.huichongzi.fastwidget4android.widget.WaveBallProgress
         android:id="@+id/wave_ball_progress_act_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_width="300dp"
+        android:layout_height="300dp"/>
 </RelativeLayout>
