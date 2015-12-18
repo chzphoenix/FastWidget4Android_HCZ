@@ -55,7 +55,7 @@ public class BannerViewActivity extends Activity {
 		}
 
 		@Override
-		public boolean isIndictorShow() {
+		public boolean isIndicatorShow() {
 			return true;
 		}
 	}

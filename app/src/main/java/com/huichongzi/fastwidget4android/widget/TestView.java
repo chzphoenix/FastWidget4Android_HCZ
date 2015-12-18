@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Rect;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
@@ -41,20 +42,14 @@ public class TestView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.banner_a);
-        float[] dst = new float[]{
-                bitmap.getWidth(), bitmap.getHeight() * 2 / 3,
-                bitmap.getWidth(), bitmap.getHeight(),
-                0, bitmap.getHeight(),
-                0, bitmap.getHeight() * 2 / 3};
-        float[] src = new float[]{
-                bitmap.getWidth(), bitmap.getHeight() * 2 / 3,
-                bitmap.getWidth(), bitmap.getHeight() / 3,
-                0, bitmap.getHeight() / 3,
-                0, bitmap.getHeight() * 2 / 3};
-        Matrix matrix = new Matrix();
-        matrix.setPolyToPoly(src, 0, dst, 0, src.length >> 1);
-        canvas.drawBitmap(bitmap, matrix, null);
+        Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.page_a);
+        float[] verts = {
+                0, 0,
+                getWidth() - 100 , -100,
+                0 , getHeight(),
+                getWidth() - 300  , getHeight() - 100
+        };
+        canvas.drawBitmapMesh(bitmap, 1, 1, verts, 0, null, 0, null);
         super.onDraw(canvas);
     }
 
