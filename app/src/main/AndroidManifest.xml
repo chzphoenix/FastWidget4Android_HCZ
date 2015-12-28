@@ -19,6 +19,7 @@
         <activity android:name=".activity.DragGridViewActivity"/>
         <activity android:name=".activity.FolioListViewActivity"/>
         <activity android:name=".activity.WaveBallProgressActivity"/>
+        <activity android:name=".activity.RecycleScrollViewActivity"/>
         <activity android:name=".activity.TestActivity"/>
     </application>
 
