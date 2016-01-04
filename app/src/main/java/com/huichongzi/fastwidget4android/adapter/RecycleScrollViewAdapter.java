@@ -4,12 +4,11 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 
 import com.huichongzi.fastwidget4android.R;
-import com.huichongzi.fastwidget4android.widget.RecycleScrollListView;
+import com.huichongzi.fastwidget4android.widget.RecycleScrollView;
 
-public class RecycleScrollViewAdapter extends BaseAdapter{
+public class RecycleScrollViewAdapter extends RecycleScrollView.RecycleScrollViewAdapter {
 	//item的透明度，当未置顶显示时
 	public static final float ITEM_SHADE_DARK_ALPHA = 0.65f;
 	//item的透明度，当置顶显示时
@@ -18,22 +17,28 @@ public class RecycleScrollViewAdapter extends BaseAdapter{
 	public static final float ITEM_CONTENT_TEXT_SCALE = 1.5f;
 
 	private Context mContext;
-	private RecycleScrollListView mScrollView;
+	private RecycleScrollView mScrollView;
 
 	//item置顶时的高度
 	private int itemHeight;
 	//item未置顶时的高度
 	private int itemSmallHeight;
 
-	public RecycleScrollViewAdapter(Context context, RecycleScrollListView scrollView){
+	public RecycleScrollViewAdapter(Context context, RecycleScrollView scrollView){
 		mContext = context;
 		mScrollView = scrollView;
 		itemHeight = context.getResources().getDimensionPixelSize(
 				R.dimen.recycle_scrollview_item_height);
 		itemSmallHeight = (int)(itemHeight /ITEM_CONTENT_TEXT_SCALE);
 	}
+
 	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
+	public long getItemId(int position) {
+		return position;
+	}
+
+	@Override
+	public View getView(int position, View convertView, ViewGroup parent, boolean isLoadData) {
 		View view = null;
 		if(convertView == null){
 			view = LayoutInflater.from(mContext).inflate(R.layout.recycle_scrollview_item, null);
@@ -59,11 +64,6 @@ public class RecycleScrollViewAdapter extends BaseAdapter{
 				ViewGroup.LayoutParams.MATCH_PARENT, itemHeight);
 		view.setLayoutParams(itemParams);
 		return view;
-	}
-
-	@Override
-	public long getItemId(int position) {
-		return position;
 	}
 
 	@Override

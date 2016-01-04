@@ -16,6 +16,7 @@ import com.huichongzi.fastwidget4android.activity.BannerViewActivity;
 import com.huichongzi.fastwidget4android.activity.DragGridViewActivity;
 import com.huichongzi.fastwidget4android.activity.FolioListViewActivity;
 import com.huichongzi.fastwidget4android.activity.RecycleScrollViewActivity;
+import com.huichongzi.fastwidget4android.activity.RecycleScrollViewListActivity;
 import com.huichongzi.fastwidget4android.activity.TestActivity;
 import com.huichongzi.fastwidget4android.activity.WaveBallProgressActivity;
 import com.huichongzi.fastwidget4android.utils.DisplayUtils;
