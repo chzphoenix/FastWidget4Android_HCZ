@@ -24,5 +24,6 @@ public class BlindsListViewActivity extends Activity {
     private void initView(){
         BlindsListView blindsListView = (BlindsListView)findViewById(R.id.blinds_listview_act_list);
         blindsListView.setAdapter(new AnimationListAdapter(this));
+        blindsListView.setIsVertical(false);
     }
 }
