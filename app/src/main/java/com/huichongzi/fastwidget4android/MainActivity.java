@@ -13,18 +13,22 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.huichongzi.fastwidget4android.activity.BannerViewActivity;
+import com.huichongzi.fastwidget4android.activity.BlindsListViewActivity;
 import com.huichongzi.fastwidget4android.activity.DragGridViewActivity;
 import com.huichongzi.fastwidget4android.activity.FolioListViewActivity;
 import com.huichongzi.fastwidget4android.activity.RecycleScrollViewActivity;
-import com.huichongzi.fastwidget4android.activity.RecycleScrollViewListActivity;
 import com.huichongzi.fastwidget4android.activity.TestActivity;
 import com.huichongzi.fastwidget4android.activity.WaveBallProgressActivity;
 import com.huichongzi.fastwidget4android.utils.DisplayUtils;
 
 
 public class MainActivity extends Activity {
-    private static final String[] names = {"循环轮播BannerView", "可拖动排序的GridView", "翻转展示的ListView", "水晶球进度条", "可回收scrollview", "测试"};
-    private static final Class[] clazzs = {BannerViewActivity.class, DragGridViewActivity.class, FolioListViewActivity.class, WaveBallProgressActivity.class, RecycleScrollViewActivity.class, TestActivity.class};
+    private static final String[] names = {"循环轮播BannerView", "可拖动排序的GridView",
+            "翻转展示的ListView", "百叶窗ListView", "水晶球进度条",
+            "可回收scrollview", "测试"};
+    private static final Class[] clazzs = {BannerViewActivity.class, DragGridViewActivity.class,
+            FolioListViewActivity.class, BlindsListViewActivity.class, WaveBallProgressActivity.class,
+            RecycleScrollViewActivity.class, TestActivity.class};
 
     private ListView list;
     @Override

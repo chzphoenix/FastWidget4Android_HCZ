@@ -4,8 +4,9 @@
     >
 
 
-    <com.huichongzi.fastwidget4android.widget.RecycleScrollView
+    <com.huichongzi.fastwidget4android.widget.BlindsView
         android:id="@+id/test"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        />
 </RelativeLayout>
