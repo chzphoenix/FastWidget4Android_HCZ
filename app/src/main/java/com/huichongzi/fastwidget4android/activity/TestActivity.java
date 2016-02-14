@@ -28,7 +28,6 @@ public class TestActivity extends Activity {
 	private void initView(){
 		BlindsView view = (BlindsView)findViewById(R.id.test);
 		view.init(10, 8, R.drawable.banner_a, R.drawable.banner_b);
-		view.pageLeft();
 	}
 
 

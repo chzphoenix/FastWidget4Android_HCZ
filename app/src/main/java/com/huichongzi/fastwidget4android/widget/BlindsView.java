@@ -1,5 +1,7 @@
 package com.huichongzi.fastwidget4android.widget;
 
+import android.animation.Animator;
+import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -20,38 +22,23 @@ import java.util.List;
  * @description
  * @date 2016/1/20 21:04
  */
-public class BlindsView extends LinearLayout {
-    /**
-     * 百叶窗动画的方向
-     */
-    public static final int BLINDS_ACTION_PAGE_DOWN = 0x100;
-    public static final int BLINDS_ACTION_PAGE_UP = 0x101;
-    public static final int BLINDS_ACTION_PAGE_LEFT = 0x102;
-    public static final int BLINDS_ACTION_PAGE_RIGHT = 0x103;
+public class BlindsView extends LinearLayout implements AnimationViewInterface{
 
     /**
      * 每个叶面的动画时间
      */
-    private long mDuration = 800;
+    private long mDuration = 1500;
     /**
-     * 每列/行叶面动画的相隔时间
+     * 每列/行叶面转动相差的角度
      */
-    private long mSpace = 50;
+    private float mSpace = 15;
+
+    private float mAnimationPercent;
     private int mRowCount;
     private int mColumnCount;
 
-    private OnBlindsListener mOnBlindsListener;
-
-    private Handler mHandler = new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            if(mOnBlindsListener != null){
-                //动画执行结束后回调
-                mOnBlindsListener.onBlindsFinished(msg.what);
-            }
-        }
-    };
+    private ValueAnimator mAnimator;
+    private OnAnimationViewListener mOnAnimationViewListener;
 
     public BlindsView(Context context) {
         super(context);
@@ -115,114 +102,104 @@ public class BlindsView extends LinearLayout {
         setBitmaps(rowCount, columnCount, subFrontBitmaps, subBackBitmaps);
     }
 
-    /**
-     * 向下翻转
-     * 从顶部开始一行行翻转
-     */
-    public void pageDown(){
+    @Override
+    public boolean isAnimationRunning(){
+        if(mAnimator == null){
+            return false;
+        }
+        return mAnimator.isRunning();
+    }
+
+    @Override
+    public void startAnimation(boolean isVertical, float toPercent){
+        if(mAnimator != null && mAnimator.isRunning()){
+            return;
+        }
+        if(mAnimationPercent < 0){
+            toPercent -= 1;
+        }
+        mAnimator = ValueAnimator.ofFloat(mAnimationPercent, toPercent);
+        mAnimator.setDuration((long) (Math.abs(toPercent - mAnimationPercent) * mDuration));
+        mAnimator.start();
+        OnAnimationListener onAnimationListener = new OnAnimationListener(isVertical, toPercent);
+        mAnimator.addUpdateListener(onAnimationListener);
+        mAnimator.addListener(onAnimationListener);
+    }
+
+    @Override
+    public float getAnimationPercent(){
+        return mAnimationPercent;
+    }
+
+    @Override
+    public void setAnimationPercent(float percent, boolean isVertical){
+        mAnimationPercent = percent;
+        float value = mAnimationPercent * getTotalVaule(isVertical);
         for(int i = 0; i < mRowCount; i++){
             LinearLayout parent = (LinearLayout)getChildAt(i);
             for(int j = 0; j < mColumnCount; j++){
-                startAnimation((RotateView) parent.getChildAt(j), BLINDS_ACTION_PAGE_DOWN, mSpace * i);
+                RotateView view = (RotateView)parent.getChildAt(j);
+                float subValue;
+                if(value > 0){
+                    if(isVertical){
+                        subValue = value - mSpace * i;
+                    }
+                    else{
+                        subValue = value - mSpace * j;
+                    }
+                    if(subValue < 0){
+                        subValue = 0;
+                    }
+                    else if(subValue > 180){
+                        subValue = 180;
+                    }
+                }
+                else{
+                    if(isVertical){
+                        subValue = value + mSpace * (mRowCount - i - 1);
+                    }
+                    else{
+                        subValue = value + mSpace * (mColumnCount - j - 1);
+                    }
+                    if(subValue < -180){
+                        subValue = -180;
+                    }
+                    else if(subValue > 0){
+                        subValue = 0;
+                    }
+                }
+                view.setRotation(subValue, isVertical);
             }
         }
     }
 
-    /**
-     * 向上翻转
-     * 从底部开始一行行翻转
-     */
-    public void pageUp(){
-        for(int i = mRowCount - 1; i >= 0; i--){
-            LinearLayout parent = (LinearLayout)getChildAt(i);
-            for(int j = 0; j < mColumnCount; j++){
-                startAnimation((RotateView) parent.getChildAt(j), BLINDS_ACTION_PAGE_UP, mSpace * (mRowCount - 1 - i));
-            }
+
+    private float getTotalVaule(boolean isVertical){
+        if(isVertical) {
+            return mSpace * (mRowCount - 1) + 180;
+        }
+        else{
+            return mSpace * (mColumnCount - 1) + 180;
         }
     }
 
-    /**
-     * 向右翻转
-     * 从左边开始一列列翻转
-     */
-    public void pageRight(){
-        for(int i = 0; i < mColumnCount; i++){
-            for(int j = 0; j < mRowCount; j++){
-                LinearLayout parent = (LinearLayout)getChildAt(j);
-                startAnimation((RotateView) parent.getChildAt(i), BLINDS_ACTION_PAGE_RIGHT, mSpace * i);
-            }
-        }
-    }
-
-    /**
-     * 向左翻转
-     * 从右边开始一列列翻转
-     */
-    public void pageLeft(){
-        for(int i = mColumnCount - 1; i >= 0; i--){
-            for(int j = 0; j < mRowCount; j++){
-                LinearLayout parent = (LinearLayout)getChildAt(j);
-                startAnimation((RotateView) parent.getChildAt(i), BLINDS_ACTION_PAGE_LEFT, mSpace * (mColumnCount - 1 - i));
-            }
-        }
-    }
-
-    /**
-     * 翻转动画
-     * @param view
-     * @param action  翻转动作
-     * @param space   动画延时
-     */
-    private void startAnimation(RotateView view, int action, long space){
-        //通过翻转动作判断翻转的目标角度
-        float toRotate = 0;
-        switch (action){
-            case BlindsView.BLINDS_ACTION_PAGE_DOWN:
-                toRotate = -180;
-                view.rotateXAnimation(0, toRotate, mDuration, space);
-                break;
-            case BlindsView.BLINDS_ACTION_PAGE_RIGHT:
-                toRotate = 180;
-                view.rotateYAnimation(0, toRotate, mDuration, space);
-                break;
-            case BlindsView.BLINDS_ACTION_PAGE_UP:
-                toRotate = 180;
-                view.rotateXAnimation(0, toRotate, mDuration, space);
-                break;
-            case BlindsView.BLINDS_ACTION_PAGE_LEFT:
-                toRotate = -180;
-                view.rotateYAnimation(0, toRotate, mDuration, space);
-                break;
-        }
-        /**
-         * 发送动画结束msg
-         * 这条msg的延时是 翻转动画的时间mDuration + 翻转动画延时space + 额外延时mSpace
-         * 由于有额外延时，所以msg的处理一定在翻转动画结束之后
-         * 由于每次先removeMessages，这样会保证之前的被清楚掉，只留下最后一个动画的msg，实现动画全部完成事件
-         * 注意：这里还会存在问题，当space比mDuration大很多导致一队翻转结束另外一队还未开始，就会出现动画全部完成前处理了消息
-         */
-        mHandler.removeMessages(action);
-        mHandler.sendEmptyMessageDelayed(action, mDuration + space + mSpace);
-    }
-
-    /**
-     * 设置单个叶面翻转时间
-     * @param duration
-     */
+    @Override
     public void setDuration(long duration) {
         mDuration = duration;
     }
 
     /**
-     * 设置每队叶面翻转的间隔
+     * 设置每队叶面翻转相差的角度，即控制叶面翻转速度
      * @param space
      */
-    public void setSpace(long space) {
+    public void setSpace(float space) {
         mSpace = space;
     }
 
-    public void setOnBlindsListener(OnBlindsListener onBlindsListener) {
-        mOnBlindsListener = onBlindsListener;
+
+    @Override
+    public void setOnAnimationViewListener(OnAnimationViewListener onAnimationViewListener) {
+        mOnAnimationViewListener = onAnimationViewListener;
     }
 
     /**
@@ -321,8 +298,45 @@ public class BlindsView extends LinearLayout {
         }
     }
 
+    class OnAnimationListener implements ValueAnimator.AnimatorUpdateListener, Animator.AnimatorListener{
+        private boolean isVertical;
+        private float toPercent;
+        public OnAnimationListener(boolean isVertical, float toPercent){
+            this.isVertical = isVertical;
+            this.toPercent = toPercent;
+        }
+        @Override
+        public void onAnimationUpdate(ValueAnimator animation) {
+            setAnimationPercent((float)animation.getAnimatedValue(), isVertical);
+        }
 
-    interface OnBlindsListener{
-        public void onBlindsFinished(int action);
+        @Override
+        public void onAnimationStart(Animator animation) {
+
+        }
+
+        @Override
+        public void onAnimationEnd(Animator animation) {
+            mAnimationPercent = 0;
+            if(mOnAnimationViewListener == null){
+                return;
+            }
+            if(toPercent == 1){
+                mOnAnimationViewListener.pagePrevious();
+            }
+            else if(toPercent == -1){
+                mOnAnimationViewListener.pageNext();
+            }
+        }
+
+        @Override
+        public void onAnimationCancel(Animator animation) {
+            mAnimationPercent = 0;
+        }
+
+        @Override
+        public void onAnimationRepeat(Animator animation) {
+        }
     }
+    
 }

@@ -117,17 +117,17 @@ public abstract class AnimationListView<T extends View> extends FrameLayout{
             }
         }
         //添加翻转处理的view
-        addView(mAniamtionView, mLayoutParams);
-        mAniamtionView.setVisibility(INVISIBLE);
+        //addView(mAnimationView, mLayoutParams);
         //刷新界面
         initItemVisible();
+        setAnimationViewVisible(false);
     }
 
     /**
      * 下一页
      */
     protected void pageNext() {
-        mAniamtionView.setVisibility(INVISIBLE);
+        setAnimationViewVisible(false);
         //当前位置加1
         mCurrentPosition++;
         if (mCurrentPosition >= mAdapter.getCount()) {
@@ -160,7 +160,7 @@ public abstract class AnimationListView<T extends View> extends FrameLayout{
         mCacheItems.add(0, last);
         //刷新界面
         initItemVisible();
-        mAniamtionView.setVisibility(INVISIBLE);
+        setAnimationViewVisible(false);
     }
 
 
@@ -195,9 +195,14 @@ public abstract class AnimationListView<T extends View> extends FrameLayout{
 
     protected void setAnimationViewVisible(boolean visible) {
         if (visible) {
-            mAniamtionView.setVisibility(VISIBLE);
+            addView(mAniamtionView, mLayoutParams);
+            //mAnimationView.setVisibility(VISIBLE);
         } else {
-            mAniamtionView.setVisibility(INVISIBLE);
+            //mAnimationView.setVisibility(INVISIBLE);
+            removeView(mAniamtionView);
         }
+    }
+    protected boolean isAnimationViewVisible(){
+        return mAniamtionView.getParent() != null;
     }
 }

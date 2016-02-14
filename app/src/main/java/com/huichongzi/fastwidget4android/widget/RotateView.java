@@ -167,6 +167,65 @@ public class RotateView extends ImageView {
         mAnimator.addUpdateListener(new RotateListener(isRotateX));
     }
 
+    /**
+     * 设置某值的翻转效果，包括图片处理等
+     * @param value
+     * @param isRotateX
+     */
+    public void setRotation(float value, boolean isRotateX){
+        //设置翻转角度
+        if(isRotateX){
+            setRotationX(value);
+        }
+        else {
+            setRotationY(value);
+        }
+        //将角度转换为0-360之间，以便后面判断
+        float rotate = value % 360;
+        if (rotate < 0) {
+            rotate += 360;
+        }
+        /**
+         * 设置缩放：当向垂直翻转时缩小，反之恢复
+         * 缩放的主要原因是在翻转时，图像会变形为梯形，这时图片中心轴保持原来的宽度，
+         * 则向上翻转那边会变大，部分图像会超出无法显示。所以这里用缩放处理一下，
+         * 至于缩放大小，根据实际需求改变。
+         */
+        float scale = rotate > 180 ? Math.abs(rotate - 270) : Math.abs(rotate - 90);
+        scale = scale / 90 * (1 - mScaleMin) + mScaleMin;
+        if(isRotateX){
+            setScaleX(scale);
+        }
+        else{
+            setScaleY(scale);
+        }
+
+        //根据翻转的位置，设置前景/背景图片
+        if(mBackBitmap != null) {
+            /**
+             * 首先会根据翻转的方向，对背景图片进行一次翻转
+             * 这样当翻转时背景图片不会左右上下颠倒
+             */
+            Bitmap backBitmap = null;
+            Matrix matrix = new Matrix();
+            if (isRotateX) {
+                matrix.postScale(1, -1);
+            } else {
+                matrix.postScale(-1, 1);
+            }
+            backBitmap = Bitmap.createBitmap(mBackBitmap, 0, 0,
+                    mBackBitmap.getWidth(), mBackBitmap.getHeight(), matrix, true);
+            /**
+             * 当翻转在2、3象限显示背景图，在1、4象限显示前景图
+             */
+            if (rotate > 90 && rotate < 270) {
+                setImageBitmap(backBitmap);
+            } else {
+                setImageBitmap(mFrontBitmap);
+            }
+        }
+    }
+
     class RotateListener implements ValueAnimator.AnimatorUpdateListener{
         private boolean isRotateX;
 
@@ -176,58 +235,7 @@ public class RotateView extends ImageView {
         @Override
         public void onAnimationUpdate(ValueAnimator animation) {
             float value = (Float)(animation.getAnimatedValue());
-            //设置翻转角度
-            if(isRotateX){
-                setRotationX(value);
-            }
-            else {
-                setRotationY(value);
-            }
-            //将角度转换为0-360之间，以便后面判断
-            float rotate = value % 360;
-            if (rotate < 0) {
-                rotate += 360;
-            }
-            /**
-             * 设置缩放：当向垂直翻转时缩小，反之恢复
-             * 缩放的主要原因是在翻转时，图像会变形为梯形，这时图片中心轴保持原来的宽度，
-             * 则向上翻转那边会变大，部分图像会超出无法显示。所以这里用缩放处理一下，
-             * 至于缩放大小，根据实际需求改变。
-             */
-            float scale = rotate > 180 ? Math.abs(rotate - 270) : Math.abs(rotate - 90);
-            scale = scale / 90 * (1 - mScaleMin) + mScaleMin;
-            if(isRotateX){
-                setScaleX(scale);
-            }
-            else{
-                setScaleY(scale);
-            }
-
-            //根据翻转的位置，设置前景/背景图片
-            if(mBackBitmap != null) {
-                /**
-                 * 首先会根据翻转的方向，对背景图片进行一次翻转
-                 * 这样当翻转时背景图片不会左右上下颠倒
-                 */
-                Bitmap backBitmap = null;
-                Matrix matrix = new Matrix();
-                if(isRotateX){
-                    matrix.postScale(1, -1);
-                }
-                else{
-                    matrix.postScale(-1, 1);
-                }
-                backBitmap = Bitmap.createBitmap(mBackBitmap, 0, 0,
-                        mBackBitmap.getWidth(), mBackBitmap.getHeight(), matrix, true);
-                /**
-                 * 当翻转在2、3象限显示背景图，在1、4象限显示前景图
-                 */
-                if (rotate > 90 && rotate < 270) {
-                    setImageBitmap(backBitmap);
-                } else {
-                    setImageBitmap(mFrontBitmap);
-                }
-            }
+            setRotation(value, isRotateX);
         }
     }
 

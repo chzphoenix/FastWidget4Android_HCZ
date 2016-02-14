@@ -4,7 +4,7 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
-    <com.huichongzi.fastwidget4android.widget.BlindsListView
+    <com.huichongzi.fastwidget4android.widget.AnimationListViewNew
         android:id="@+id/blinds_listview_act_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
