@@ -6,6 +6,8 @@ import android.database.DataSetObserver;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Adapter;
 import android.widget.FrameLayout;
@@ -14,21 +16,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 抽象类，需要子类来实现
  * 以过场动画来实现切换的ListView
  * 每次只展示一个item，在切换时会有过场动画
  * @author chz
  * @description
  * @date 2016/1/26 15:49
  */
-public abstract class AnimationListView<T extends View> extends FrameLayout{
+public class AnimationListView extends FrameLayout{
+
+    public static final int TYPE_BLINDS = 0x100;
+    public static final int TYPE_FOLIO = 0x101;
+
+    public static final int TYPE_RANDOM = 0x999;
 
     protected int mCurrentPosition;
 
     /**
      * 执行过场动画的view
      */
-    protected T mAniamtionView;
+    protected AnimationViewInterface mAnimationView;
 
     /**
      * 缓存的item
@@ -39,6 +45,16 @@ public abstract class AnimationListView<T extends View> extends FrameLayout{
 
     protected LayoutParams mLayoutParams;
     protected Adapter mAdapter;
+
+    /**
+     * 水平/垂直方法翻转
+     */
+    private boolean isVertical;
+    private int mAnimationType;
+    private float mTmpX;
+    private float mTmpY;
+    private float mMoveX = 0;
+    private float mMoveY = 0;
 
     public AnimationListView(Context context) {
         super(context);
@@ -194,15 +210,172 @@ public abstract class AnimationListView<T extends View> extends FrameLayout{
     }
 
     protected void setAnimationViewVisible(boolean visible) {
+        if(mAnimationView == null){
+            return;
+        }
         if (visible) {
-            addView(mAniamtionView, mLayoutParams);
+            addView((View) mAnimationView, mLayoutParams);
             //mAnimationView.setVisibility(VISIBLE);
         } else {
             //mAnimationView.setVisibility(INVISIBLE);
-            removeView(mAniamtionView);
+            removeView((View) mAnimationView);
         }
     }
     protected boolean isAnimationViewVisible(){
-        return mAniamtionView.getParent() != null;
+        return mAnimationView != null && ((View) mAnimationView).getParent() != null;
+    }
+
+    public boolean isVertical() {
+        return isVertical;
+    }
+
+    public void setIsVertical(boolean isVertical) {
+        this.isVertical = isVertical;
+    }
+
+    public void setAnimationType(int animationType) {
+        mAnimationType = animationType;
+    }
+
+    public AnimationViewInterface getAnimationView() {
+        return mAnimationView;
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (getWidth() <= 0 || getHeight() <= 0) {
+            return false;
+        }
+        if(mAnimationView != null && mAnimationView.isAnimationRunning()){
+            return true;
+        }
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                mTmpX = event.getX();
+                mTmpY = event.getY();
+                break;
+            case MotionEvent.ACTION_MOVE:
+                if (event.getX() != mTmpX) {
+                    mMoveX = event.getX() - mTmpX;
+                }
+                if (event.getY() != mTmpY) {
+                    mMoveY = event.getY() - mTmpY;
+                }
+                createAnimationView();
+                float percent = mAnimationView.getAnimationPercent();
+                if (isVertical) {
+                    percent += mMoveY / getHeight();
+                } else {
+                    percent += mMoveX / getWidth();
+                }
+                if(percent < -1){
+                    percent = -1;
+                }
+                else if(percent > 1){
+                    percent = 1;
+                }
+                if(canPage(mMoveX, mMoveY, percent)) {
+                    if (!isAnimationViewVisible()) {
+                        setAnimationViewVisible(true);
+                    }
+                    if(mAnimationView.getAnimationPercent() == 0
+                            || mAnimationView.getAnimationPercent() * percent < 0) {
+                        Bitmap frontBitmap = getViewBitmap(mCacheItems.get(1));
+                        Bitmap backBitmap = null;
+                        if (isVertical) {
+                            backBitmap = getViewBitmap(mCacheItems.get(mMoveY > 0 ? 0 : 2));
+                        } else {
+                            backBitmap = getViewBitmap(mCacheItems.get(mMoveX > 0 ? 0 : 2));
+                        }
+                        initAniamtionView(frontBitmap, backBitmap);
+                    }
+                    mAnimationView.setAnimationPercent(percent, isVertical);
+                }
+                mTmpX = event.getX();
+                mTmpY = event.getY();
+                break;
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
+            case MotionEvent.ACTION_OUTSIDE:
+                if (event.getX() != mTmpX) {
+                    mMoveX = event.getX() - mTmpX;
+                }
+                if (event.getY() != mTmpY) {
+                    mMoveY = event.getY() - mTmpY;
+                }
+                float toPercent = 0;
+                if (isVertical) {
+                    toPercent = mMoveY > 0 ? 1 : 0;
+                } else {
+                    toPercent = mMoveX > 0 ? 1 : 0;
+                }
+                if(mAnimationView.getAnimationPercent() < 0){
+                    toPercent -= 1;
+                }
+                if(canPage(mMoveX, mMoveY, toPercent)) {
+                    mAnimationView.startAnimation(isVertical, toPercent);
+                }
+                mMoveX = 0;
+                mMoveY = 0;
+                break;
+        }
+        return true;
+    }
+
+
+    private boolean canPage(float moveX, float moveY, float toPercent) {
+        if (isVertical) {
+            if(moveY == 0){
+                return false;
+            }
+            else if(moveY > 0){
+                return toPercent <= 0 || mCurrentPosition > 0;
+            }
+            else{
+                return toPercent >= 0 || mCurrentPosition < mAdapter.getCount() - 1;
+            }
+        } else {
+            if(moveX == 0){
+                return false;
+            }
+            else if(moveX > 0){
+                return toPercent <= 0 || mCurrentPosition > 0;
+            }
+            else{
+                return toPercent >= 0 || mCurrentPosition < mAdapter.getCount() - 1;
+            }
+        }
+    }
+
+    //TODO 添加更多的效果
+    private void createAnimationView(){
+        switch (mAnimationType){
+            case TYPE_BLINDS:
+                if(mAnimationView == null || !(mAnimationView instanceof BlindsView)){
+                    mAnimationView = new BlindsView(getContext());
+                }
+                break;
+            case TYPE_FOLIO:
+                if(mAnimationView == null || !(mAnimationView instanceof FolioView)){
+                    mAnimationView = new FolioView(getContext());
+                }
+                break;
+        }
+        mAnimationView.setOnAnimationViewListener(new OnAnimationViewListener() {
+            @Override
+            public void pageNext() {
+                AnimationListView.this.pageNext();
+            }
+
+            @Override
+            public void pagePrevious() {
+                AnimationListView.this.pagePrevious();
+            }
+        });
+    }
+
+    //TODO 添加更多的效果
+    private void initAniamtionView(Bitmap frontBitmap, Bitmap backBitmap){
+        mAnimationView.setBitmap(frontBitmap, backBitmap);
     }
 }

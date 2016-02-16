@@ -4,7 +4,7 @@
     >
 
 
-    <com.huichongzi.fastwidget4android.widget.FolioListView
+    <com.huichongzi.fastwidget4android.widget.AnimationListView
         android:id="@+id/folio_listview_act_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

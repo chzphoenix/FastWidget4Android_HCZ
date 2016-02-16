@@ -34,8 +34,8 @@ public class BlindsView extends LinearLayout implements AnimationViewInterface{
     private float mSpace = 15;
 
     private float mAnimationPercent;
-    private int mRowCount;
-    private int mColumnCount;
+    private int mRowCount = 10;
+    private int mColumnCount = 6;
 
     private ValueAnimator mAnimator;
     private OnAnimationViewListener mOnAnimationViewListener;
@@ -67,39 +67,39 @@ public class BlindsView extends LinearLayout implements AnimationViewInterface{
     }
 
     /**
-     * 初始化百叶窗
-     * @param rowCount   行数
-     * @param columnCount  列数
+     * 初始化百叶窗图片
      * @param frontBitmapResource  前景图片
      * @param backBitmapResource   背景图片
      */
-    public void init(int rowCount, int columnCount, int frontBitmapResource, int backBitmapResource){
-        this.init(rowCount, columnCount,
+    public void setBitmap(int frontBitmapResource, int backBitmapResource){
+        this.setBitmap(
                 BitmapFactory.decodeResource(getContext().getResources(), frontBitmapResource),
                 BitmapFactory.decodeResource(getContext().getResources(), backBitmapResource));
     }
 
 
     /**
-     * 初始化百叶窗
-     * @param rowCount   行数
-     * @param columnCount  列数
+     * 初始化百叶窗图片
      * @param frontBitmap  前景图片
      * @param backBitmap   背景图片
      */
-    public void init(int rowCount, int columnCount, Bitmap frontBitmap, Bitmap backBitmap){
-        if(rowCount < 1){
-            rowCount = 1;
-        }
-        if(columnCount < 1){
-            columnCount = 1;
-        }
-        mRowCount= rowCount;
-        mColumnCount = columnCount;
+    @Override
+    public void setBitmap(Bitmap frontBitmap, Bitmap backBitmap){
         //处理图片
-        List<Bitmap> subFrontBitmaps = getSubBitmaps(rowCount, columnCount, frontBitmap);
-        List<Bitmap> subBackBitmaps = getSubBitmaps(rowCount, columnCount, backBitmap);
-        setBitmaps(rowCount, columnCount, subFrontBitmaps, subBackBitmaps);
+        List<Bitmap> subFrontBitmaps = getSubBitmaps(mRowCount, mColumnCount, frontBitmap);
+        List<Bitmap> subBackBitmaps = getSubBitmaps(mRowCount, mColumnCount, backBitmap);
+        setBitmaps(mRowCount, mColumnCount, subFrontBitmaps, subBackBitmaps);
+    }
+
+    /**
+     * 设置百叶窗的行列数
+     * 注意这个方法一定要在setBitmap()之前执行才有效果
+     * @param rowCount
+     * @param columnCount
+     */
+    public void setRowsAndColumns(int rowCount, int columnCount){
+        mRowCount = rowCount;
+        mColumnCount = columnCount;
     }
 
     @Override

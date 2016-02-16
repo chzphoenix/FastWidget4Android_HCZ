@@ -11,7 +11,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
+import android.util.Log;
 import android.view.View;
 
 /**
@@ -19,19 +19,7 @@ import android.view.View;
  * 可以实现俩张图片对折翻转效果
  * Created by chz on 2015/12/8.
  */
-public class FolioView extends View {
-    /**
-     * 未翻转状态
-     */
-    public static final int FOLIO_STATE_DEFUALT = 0;
-    /**
-     * 上翻状态
-     */
-    public static final int FOLIO_STATE_UP = 1;
-    /**
-     * 下翻状态
-     */
-    public static final int FOLIO_STATE_DOWN = 2;
+public class FolioView extends View implements AnimationViewInterface{
     /**
      * 翻转时拉伸变形的最大值
      * 即翻转90度时，最外边长度的增加倍数
@@ -42,29 +30,29 @@ public class FolioView extends View {
      */
     private static final int FOLIO_SHADOW_ALPHA = 100;
 
-    private float mTmpY = -1;
     /**
      * 当前翻转的位置
      * 即翻转的最外边在屏幕上的y坐标
      */
     private float mFolioY;
-    private int mFolioState;
+    private float mCurrentPercent;
+    private long mduration = 500;
 
     /**
-     * 处于上部分的图片，整体
+     * 前景图
      */
-    private Bitmap mTopBitmap;
+    private Bitmap mFrontBitmap;
     /**
-     * 处于下部分的图片，整体
+     * 背景图
      */
-    private Bitmap mBottomBitmap;
+    private Bitmap mBackBitmap;
     /**
      * 翻转中的图片
-     * 根据情况，会是mTopBitmap的下半部分或mBottomBitmap的上半部分
+     * 根据情况，会是mTopBitmap的下半部分或上半部分
      */
     private Bitmap mFolioBitmap;
     private ObjectAnimator mFolioAnimation;
-    private OnFolioListener mOnFolioListener;
+    private OnAnimationViewListener mOnAnimationViewListener;
 
     public FolioView(Context context) {
         super(context);
@@ -95,24 +83,13 @@ public class FolioView extends View {
      * @param topBitmap
      * @param bottomBitmap
      */
-    public void setBitmap(Bitmap topBitmap, Bitmap bottomBitmap) {
-        mTopBitmap = topBitmap;
-        mBottomBitmap = bottomBitmap;
-        mFolioState = FOLIO_STATE_DEFUALT;
-        mTmpY = -1;
+    @Override
+    public void setBitmap(Bitmap frontBitmap, Bitmap backBitmap) {
+        mFrontBitmap = frontBitmap;
+        mBackBitmap = backBitmap;
     }
 
-    /**
-     * 仅供当FolioView分配不到touch down和首次move事件时使用，防止快速滑动无法翻转
-     * @param y
-     */
-    public void setTmpY(float y){
-        mTmpY = y;
-    }
 
-    public void setOnFolioListener(OnFolioListener onFolioListener) {
-        mOnFolioListener = onFolioListener;
-    }
 
     /**
      * @hide
@@ -131,11 +108,10 @@ public class FolioView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if (mFolioState == FOLIO_STATE_DEFUALT) {
+        if (mFrontBitmap == null || mBackBitmap == null) {
             return;
         }
-        if (mTopBitmap == null || mBottomBitmap == null) {
-            finish(FOLIO_STATE_DEFUALT);
+        if(getHeight() <= 0){
             return;
         }
         /**
@@ -150,18 +126,34 @@ public class FolioView extends View {
         }
 
         /**
-         * 在上半部分绘制mTopBitmap的上半
+         * 根据上翻下翻判断上下的图片
          */
-        Rect topHoldSrc = new Rect(0, 0, mTopBitmap.getWidth(), mTopBitmap.getHeight() / 2);
+        Bitmap topBitmap = null;
+        Bitmap bottomBitmap = null;
+        if(mCurrentPercent < 0){
+            topBitmap = mFrontBitmap;
+            bottomBitmap = mBackBitmap;
+        }
+        else if(mCurrentPercent > 0){
+            topBitmap = mBackBitmap;
+            bottomBitmap = mFrontBitmap;
+        }
+        if (topBitmap == null || bottomBitmap == null) {
+            return;
+        }
+        /**
+         * 在上半部分绘制topBitmap的上半
+         */
+        Rect topHoldSrc = new Rect(0, 0, topBitmap.getWidth(), topBitmap.getHeight() / 2);
         Rect topHoldDst = new Rect(0, 0, getWidth(), getHeight() / 2);
-        canvas.drawBitmap(mTopBitmap, topHoldSrc, topHoldDst, null);
+        canvas.drawBitmap(topBitmap, topHoldSrc, topHoldDst, null);
 
         /**
-         * 在下半部分绘制mTopBitmap的上半
+         * 在下半部分绘制topBitmap的上半
          */
-        Rect bottomHoldSrc = new Rect(0, mBottomBitmap.getHeight() / 2, mBottomBitmap.getWidth(), mBottomBitmap.getHeight());
+        Rect bottomHoldSrc = new Rect(0, bottomBitmap.getHeight() / 2, bottomBitmap.getWidth(), mBackBitmap.getHeight());
         Rect bottomHoldDst = new Rect(0, getHeight() / 2, getWidth(), getHeight());
-        canvas.drawBitmap(mBottomBitmap, bottomHoldSrc, bottomHoldDst, null);
+        canvas.drawBitmap(bottomBitmap, bottomHoldSrc, bottomHoldDst, null);
 
         /**
          * 绘制阴影
@@ -186,7 +178,7 @@ public class FolioView extends View {
         int startY = 0;
         if (mFolioY >= getHeight() / 2) {
             //当翻转位置在中部偏下时，取mTopBitmap的下半部分，同时绘制区域为一个正梯形
-            mFolioBitmap = mTopBitmap;
+            mFolioBitmap = topBitmap;
             startY = mFolioBitmap.getHeight() / 2;
             folioDst = new float[]{0, getHeight() / 2,
                     getWidth(), getHeight() / 2,
@@ -194,7 +186,7 @@ public class FolioView extends View {
                     -rate * FOLIO_SCALE * getWidth(), mFolioY};
         } else {
             //当翻转位置在中部偏上时，取mBottomBitmap的上半部分，同时绘制区域为一个倒梯形
-            mFolioBitmap = mBottomBitmap;
+            mFolioBitmap = bottomBitmap;
             startY = 0;
             folioDst = new float[]{
                     -rate * FOLIO_SCALE * getWidth(), mFolioY,
@@ -215,101 +207,93 @@ public class FolioView extends View {
         super.onDraw(canvas);
     }
 
-    /**
-     * 翻转结束
-     * 调用回调，同时初始化
-     * @param state
-     */
-    private void finish(int state) {
-        if (mOnFolioListener != null) {
-            mOnFolioListener.onFolioFinish(state);
-        }
-        mFolioState = FOLIO_STATE_DEFUALT;
-        mTmpY = -1;
+
+    @Override
+    public boolean isAnimationRunning() {
+        return mFolioAnimation != null && mFolioAnimation.isRunning();
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        //当翻转动画中，不处理
-        if (mFolioAnimation != null && mFolioAnimation.isRunning()) {
-            return true;
+    public void startAnimation(boolean isVertical, final float toPercent) {
+        if(!isVertical){
+            return;
         }
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                mTmpY = event.getY();
-                break;
-            case MotionEvent.ACTION_MOVE:
-                float move = event.getY() - mTmpY;
-                if (mTmpY != -1 && move != 0) {
-                    /**
-                     * 判断是上翻还是下翻
-                     * 同时如果是初始状态，则为mFolioY设置不同的初始值
-                     */
-                    if (move > 0) {
-                        if (mFolioState == FOLIO_STATE_DEFUALT) {
-                            mFolioY = 0;
-                        }
-                        mFolioState = FOLIO_STATE_DOWN;
-                    } else {
-                        if (mFolioState == FOLIO_STATE_DEFUALT) {
-                            mFolioY = getHeight();
-                        }
-                        mFolioState = FOLIO_STATE_UP;
-                    }
-                    /**
-                     * 计算翻转的位置
-                     * 如果位置超出了区域，则完成翻转
-                     */
-                    mFolioY += move;
-                    if (mFolioY < 0) {
-                        finish(mFolioState);
-                    }
-                    if (mFolioY > getHeight()) {
-                        finish(mFolioState);
-                    }
-                    invalidate();
-                }
-                mTmpY = event.getY();
-                break;
-            case MotionEvent.ACTION_UP:
-                /**
-                 * 播放翻转动画
-                 * 先计算动画结束的位置，然后设定动画从当前位置翻到结束点
-                 * 动画的实质上是不停改变翻转位置并重绘
-                 */
-                float endPosition = 0;
-                if (mFolioState == FOLIO_STATE_UP) {
-                    endPosition = 0;
-                } else if (mFolioState == FOLIO_STATE_DOWN) {
-                    endPosition = getHeight();
-                }
-                mFolioAnimation = ObjectAnimator.ofFloat(this, "folioY", endPosition);
-                mFolioAnimation.setDuration(350);
-                mFolioAnimation.addListener(new Animator.AnimatorListener() {
-                    @Override
-                    public void onAnimationStart(Animator animation) {
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        finish(mFolioState);
-                    }
-
-                    @Override
-                    public void onAnimationCancel(Animator animation) {
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animator animation) {
-                    }
-                });
-                mFolioAnimation.start();
-                break;
+        if(getHeight() <= 0){
+            return;
         }
-        return true;
+        /**
+         * 播放翻转动画
+         * 先计算动画结束的位置，然后设定动画从当前位置翻到结束点
+         * 动画的实质上是不停改变翻转位置并重绘
+         */
+        float endPosition = 0;
+        if (mCurrentPercent < 0) {
+            endPosition = toPercent == 0 ? getHeight() : 0;
+        } else{
+            endPosition = toPercent == 0 ? 0 : getHeight();
+        }
+        mFolioAnimation = ObjectAnimator.ofFloat(this, "folioY", endPosition);
+        mFolioAnimation.setDuration((long)(mduration * Math.abs(toPercent - mCurrentPercent)));
+        mFolioAnimation.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mCurrentPercent = 0;
+                if(mOnAnimationViewListener != null){
+                    if(toPercent == 1){
+                        mOnAnimationViewListener.pagePrevious();
+                    }
+                    else if(toPercent == -1){
+                        mOnAnimationViewListener.pageNext();
+                    }
+                }
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+            }
+        });
+        mFolioAnimation.start();
     }
 
-    public interface OnFolioListener {
-        public void onFolioFinish(int state);
+    @Override
+    public float getAnimationPercent() {
+        return mCurrentPercent;
     }
+
+    @Override
+    public void setAnimationPercent(float percent, boolean isVertical) {
+        if(!isVertical){
+            return;
+        }
+        if(getHeight() <= 0){
+            return;
+        }
+        /**
+         * 计算翻转的位置
+         * 如果位置超出了区域，则完成翻转
+         */
+        mFolioY = percent > 0 ? percent * getHeight() : (1 + percent) * getHeight();
+        invalidate();
+        mCurrentPercent = percent;
+    }
+
+    @Override
+    public void setDuration(long duration) {
+        mduration = duration;
+    }
+
+    @Override
+    public void setOnAnimationViewListener(OnAnimationViewListener onAnimationViewListener) {
+        mOnAnimationViewListener = onAnimationViewListener;
+    }
+
+
 }
