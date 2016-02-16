@@ -266,19 +266,19 @@ public class AnimationListViewNew extends FrameLayout{
                 if (event.getY() != mTmpY) {
                     mMoveY = event.getY() - mTmpY;
                 }
-                if(canPage(mMoveX, mMoveY)) {
-                    createAnimationView();
+                createAnimationView();
+                float percent = mAnimationView.getAnimationPercent();
+                if (isVertical) {
+                    percent += mMoveY / getHeight();
+                } else {
+                    percent += mMoveX / getWidth();
+                }
+                if(canPage(mMoveX, mMoveY, percent)) {
                     if (!isAnimationViewVisible()) {
                         setAnimationViewVisible(true);
                     }
-                    float percent = 0;
-                    if (isVertical) {
-                        percent = mMoveY / getHeight();
-                    } else {
-                        percent = mMoveX / getWidth();
-                    }
                     if(mAnimationView.getAnimationPercent() == 0
-                            || mAnimationView.getAnimationPercent() * (mAnimationView.getAnimationPercent() + percent) < 0) {
+                            || mAnimationView.getAnimationPercent() * percent < 0) {
                         Bitmap frontBitmap = getViewBitmap(mCacheItems.get(1));
                         Bitmap backBitmap = null;
                         if (isVertical) {
@@ -288,7 +288,7 @@ public class AnimationListViewNew extends FrameLayout{
                         }
                         initAniamtionView(frontBitmap, backBitmap);
                     }
-                    mAnimationView.setAnimationPercent(mAnimationView.getAnimationPercent() + percent, isVertical);
+                    mAnimationView.setAnimationPercent(percent, isVertical);
                 }
                 mTmpX = event.getX();
                 mTmpY = event.getY();
@@ -302,13 +302,16 @@ public class AnimationListViewNew extends FrameLayout{
                 if (event.getY() != mTmpY) {
                     mMoveY = event.getY() - mTmpY;
                 }
-                if(canPage(mMoveX, mMoveY)) {
-                    float toPercent = 0;
-                    if (isVertical) {
-                        toPercent = mMoveY > 0 ? 1 : 0;
-                    } else {
-                        toPercent = mMoveX > 0 ? 1 : 0;
-                    }
+                float toPercent = 0;
+                if (isVertical) {
+                    toPercent = mMoveY > 0 ? 1 : 0;
+                } else {
+                    toPercent = mMoveX > 0 ? 1 : 0;
+                }
+                if(mAnimationView.getAnimationPercent() < 0){
+                    toPercent -= 1;
+                }
+                if(canPage(mMoveX, mMoveY, toPercent)) {
                     mAnimationView.startAnimation(isVertical, toPercent);
                 }
                 mMoveX = 0;
@@ -319,26 +322,26 @@ public class AnimationListViewNew extends FrameLayout{
     }
 
 
-    private boolean canPage(float moveX, float moveY) {
+    private boolean canPage(float moveX, float moveY, float toPercent) {
         if (isVertical) {
             if(moveY == 0){
                 return false;
             }
             else if(moveY > 0){
-                return mCurrentPosition > 0;
+                return toPercent <= 0 || mCurrentPosition > 0;
             }
             else{
-                return mCurrentPosition < mAdapter.getCount() - 1;
+                return toPercent >= 0 || mCurrentPosition < mAdapter.getCount() - 1;
             }
         } else {
             if(moveX == 0){
                 return false;
             }
             else if(moveX > 0){
-                return mCurrentPosition > 0;
+                return toPercent <= 0 || mCurrentPosition > 0;
             }
             else{
-                return mCurrentPosition < mAdapter.getCount() - 1;
+                return toPercent >= 0 || mCurrentPosition < mAdapter.getCount() - 1;
             }
         }
     }

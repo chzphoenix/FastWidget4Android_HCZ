@@ -115,9 +115,6 @@ public class BlindsView extends LinearLayout implements AnimationViewInterface{
         if(mAnimator != null && mAnimator.isRunning()){
             return;
         }
-        if(mAnimationPercent < 0){
-            toPercent -= 1;
-        }
         mAnimator = ValueAnimator.ofFloat(mAnimationPercent, toPercent);
         mAnimator.setDuration((long) (Math.abs(toPercent - mAnimationPercent) * mDuration));
         mAnimator.start();
@@ -168,7 +165,7 @@ public class BlindsView extends LinearLayout implements AnimationViewInterface{
                         subValue = 0;
                     }
                 }
-                view.setRotation(subValue, isVertical);
+                view.setRotation(isVertical ? -subValue : subValue, isVertical);
             }
         }
     }
