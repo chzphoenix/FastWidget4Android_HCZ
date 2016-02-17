@@ -78,11 +78,6 @@ public class FolioView extends View implements AnimationViewInterface{
     private void init() {
     }
 
-    /**
-     * 设置翻转的图片，并初始化
-     * @param topBitmap
-     * @param bottomBitmap
-     */
     @Override
     public void setBitmap(Bitmap frontBitmap, Bitmap backBitmap) {
         mFrontBitmap = frontBitmap;

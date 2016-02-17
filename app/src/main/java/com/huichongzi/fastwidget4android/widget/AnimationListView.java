@@ -209,15 +209,18 @@ public class AnimationListView extends FrameLayout{
         return view.getDrawingCache();
     }
 
+    /**
+     * 设置动画组件的显示隐藏
+     * 实际上是添加移除的动作
+     * @param visible
+     */
     protected void setAnimationViewVisible(boolean visible) {
         if(mAnimationView == null){
             return;
         }
         if (visible) {
             addView((View) mAnimationView, mLayoutParams);
-            //mAnimationView.setVisibility(VISIBLE);
         } else {
-            //mAnimationView.setVisibility(INVISIBLE);
             removeView((View) mAnimationView);
         }
     }
@@ -246,6 +249,7 @@ public class AnimationListView extends FrameLayout{
         if (getWidth() <= 0 || getHeight() <= 0) {
             return false;
         }
+        //当动画组件动画执行中，则忽略touch事件
         if(mAnimationView != null && mAnimationView.isAnimationRunning()){
             return true;
         }
@@ -255,19 +259,33 @@ public class AnimationListView extends FrameLayout{
                 mTmpY = event.getY();
                 break;
             case MotionEvent.ACTION_MOVE:
+                /**
+                 * 计算移动的距离
+                 * 这里加了判断，是为了防止mMoveX或mMoveY为0，因为后面会根据这俩个判断移动方向。
+                 */
                 if (event.getX() != mTmpX) {
                     mMoveX = event.getX() - mTmpX;
                 }
                 if (event.getY() != mTmpY) {
                     mMoveY = event.getY() - mTmpY;
                 }
+                //创建动画组件
                 createAnimationView();
+                /**
+                 * 计算当前的位置百分比
+                 * 0则代表初始位置
+                 * 0.x则代表下一页翻转的百分比
+                 * 1则代表翻到了下一页。
+                 * -0.x则代表上一页翻转的百分比
+                 * -1则代表翻到上一页。
+                 */
                 float percent = mAnimationView.getAnimationPercent();
                 if (isVertical) {
                     percent += mMoveY / getHeight();
                 } else {
                     percent += mMoveX / getWidth();
                 }
+                //保证位置在1到-1之间
                 if(percent < -1){
                     percent = -1;
                 }
@@ -275,18 +293,30 @@ public class AnimationListView extends FrameLayout{
                     percent = 1;
                 }
                 if(canPage(mMoveX, mMoveY, percent)) {
+                    //如果动画组件未展示将其展示
                     if (!isAnimationViewVisible()) {
                         setAnimationViewVisible(true);
                     }
+                    /**
+                     * 切换前景背景图
+                     * 如果当前为初始状态即未翻转，或转变了翻转方向则需切换背景图
+                     */
                     if(mAnimationView.getAnimationPercent() == 0
                             || mAnimationView.getAnimationPercent() * percent < 0) {
+                        //前景图是当前页面，即缓存页面中的第二个
                         Bitmap frontBitmap = getViewBitmap(mCacheItems.get(1));
                         Bitmap backBitmap = null;
+                        /**
+                         * 背景图根据翻转方向不同改变。
+                         * 如果要翻到上一页，则背景图为缓存页面中的第一个
+                         * 如果要翻到下一页，则背景图为缓存页面中的第二个
+                         */
                         if (isVertical) {
                             backBitmap = getViewBitmap(mCacheItems.get(mMoveY > 0 ? 0 : 2));
                         } else {
                             backBitmap = getViewBitmap(mCacheItems.get(mMoveX > 0 ? 0 : 2));
                         }
+                        //初始化动画组件
                         initAniamtionView(frontBitmap, backBitmap);
                     }
                     mAnimationView.setAnimationPercent(percent, isVertical);
@@ -297,12 +327,22 @@ public class AnimationListView extends FrameLayout{
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_OUTSIDE:
+                /**
+                 * 计算移动的距离
+                 * 这里加了判断，是为了防止mMoveX或mMoveY为0，因为后面会根据这俩个判断移动方向。
+                 */
                 if (event.getX() != mTmpX) {
                     mMoveX = event.getX() - mTmpX;
                 }
                 if (event.getY() != mTmpY) {
                     mMoveY = event.getY() - mTmpY;
                 }
+                /**
+                 * 计算结束位置百分比
+                 * 0则代表初始位置
+                 * 1则代表翻到了下一页。
+                 * -1则代表翻到上一页。
+                 */
                 float toPercent = 0;
                 if (isVertical) {
                     toPercent = mMoveY > 0 ? 1 : 0;
@@ -310,8 +350,10 @@ public class AnimationListView extends FrameLayout{
                     toPercent = mMoveX > 0 ? 1 : 0;
                 }
                 if(mAnimationView.getAnimationPercent() < 0){
+                    //如果是翻上一页的状态，则起点终点应该是0和-1
                     toPercent -= 1;
                 }
+                //如果可以翻页，则播放翻页动画
                 if(canPage(mMoveX, mMoveY, toPercent)) {
                     mAnimationView.startAnimation(isVertical, toPercent);
                 }
@@ -323,15 +365,32 @@ public class AnimationListView extends FrameLayout{
     }
 
 
+    /**
+     * 是否可以翻页
+     * @param moveX
+     * @param moveY
+     * @param toPercent
+     * @return
+     */
     private boolean canPage(float moveX, float moveY, float toPercent) {
         if (isVertical) {
             if(moveY == 0){
                 return false;
             }
             else if(moveY > 0){
+                /**
+                 * 是否可以下翻。
+                 * 当toPercent小于0则意味着此时动画组件不在初始位置，处于上翻中的状态，这样是可以下翻的。
+                 * 如果toPercent大于0，而此时处于第一个item，则无法下翻，因为上面没有item了。
+                 */
                 return toPercent <= 0 || mCurrentPosition > 0;
             }
             else{
+                /**
+                 * 是否可以上翻。
+                 * 当toPercent大于0则意味着此时动画组件不在初始位置，处于下翻中的状态，这样是可以上翻的。
+                 * 如果toPercent小于0，而此时处于最后一个item，则无法上翻，因为下面没有item了。
+                 */
                 return toPercent >= 0 || mCurrentPosition < mAdapter.getCount() - 1;
             }
         } else {
@@ -339,14 +398,28 @@ public class AnimationListView extends FrameLayout{
                 return false;
             }
             else if(moveX > 0){
+                /**
+                 * 是否可以右翻。
+                 * 当toPercent小于0则意味着此时动画组件不在初始位置，处于左翻中的状态，这样是可以右翻的。
+                 * 如果toPercent大于0，而此时处于第一个item，则无法右翻，因为右面没有item了。
+                 */
                 return toPercent <= 0 || mCurrentPosition > 0;
             }
             else{
+                /**
+                 * 是否可以左翻。
+                 * 当toPercent大于0则意味着此时动画组件不在初始位置，处于右翻中的状态，这样是可以左翻的。
+                 * 如果toPercent小于0，而此时处于最后一个item，则无法左翻，因为左面没有item了。
+                 */
                 return toPercent >= 0 || mCurrentPosition < mAdapter.getCount() - 1;
             }
         }
     }
 
+    /**
+     * 创建动画组件
+     * 如果组件以及存在且type一样，则不再创建新的
+     */
     //TODO 添加更多的效果
     private void createAnimationView(){
         switch (mAnimationType){
@@ -374,6 +447,13 @@ public class AnimationListView extends FrameLayout{
         });
     }
 
+
+    /**
+     * 初始化动画组件
+     * 主要是为动画组件添加前景背景图
+     * @param frontBitmap
+     * @param backBitmap
+     */
     //TODO 添加更多的效果
     private void initAniamtionView(Bitmap frontBitmap, Bitmap backBitmap){
         mAnimationView.setBitmap(frontBitmap, backBitmap);
