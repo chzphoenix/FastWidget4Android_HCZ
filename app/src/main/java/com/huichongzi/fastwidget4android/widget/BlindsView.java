@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.widget.LinearLayout;
 
 import java.util.ArrayList;
@@ -106,7 +107,7 @@ public class BlindsView extends LinearLayout implements AnimationViewInterface{
     }
 
     @Override
-    public void startAnimation(boolean isVertical, float toPercent){
+    public void startAnimation(boolean isVertical, MotionEvent event, float toPercent){
         if(mAnimator != null && mAnimator.isRunning()){
             return;
         }
@@ -125,7 +126,7 @@ public class BlindsView extends LinearLayout implements AnimationViewInterface{
     }
 
     @Override
-    public void setAnimationPercent(float percent, boolean isVertical){
+    public void setAnimationPercent(float percent, MotionEvent event, boolean isVertical){
         mAnimationPercent = percent;
         //获取总的转动的角度
         float value = mAnimationPercent * getTotalVaule(isVertical);
@@ -317,7 +318,7 @@ public class BlindsView extends LinearLayout implements AnimationViewInterface{
         }
         @Override
         public void onAnimationUpdate(ValueAnimator animation) {
-            setAnimationPercent((float)animation.getAnimatedValue(), isVertical);
+            setAnimationPercent((float)animation.getAnimatedValue(), null, isVertical);
         }
 
         @Override

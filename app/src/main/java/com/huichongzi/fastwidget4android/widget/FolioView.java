@@ -12,6 +12,7 @@ import android.graphics.Rect;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 
 /**
@@ -209,7 +210,7 @@ public class FolioView extends View implements AnimationViewInterface{
     }
 
     @Override
-    public void startAnimation(boolean isVertical, final float toPercent) {
+    public void startAnimation(boolean isVertical, MotionEvent event, final float toPercent) {
         if(!isVertical){
             return;
         }
@@ -264,7 +265,7 @@ public class FolioView extends View implements AnimationViewInterface{
     }
 
     @Override
-    public void setAnimationPercent(float percent, boolean isVertical) {
+    public void setAnimationPercent(float percent, MotionEvent event, boolean isVertical) {
         if(!isVertical){
             return;
         }

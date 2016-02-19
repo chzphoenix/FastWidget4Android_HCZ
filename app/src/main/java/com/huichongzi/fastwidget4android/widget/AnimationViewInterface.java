@@ -1,6 +1,7 @@
 package com.huichongzi.fastwidget4android.widget;
 
 import android.graphics.Bitmap;
+import android.view.MotionEvent;
 
 /**
  * @author chz
@@ -20,18 +21,20 @@ public interface AnimationViewInterface {
      * 开启动画
      * 从当前状态到toPercent的状态
      * @param isVertical
+     * @param event
      * @param toPercent  动画的最终位置百分比
      */
-    void startAnimation(boolean isVertical, float toPercent);
+    void startAnimation(boolean isVertical, MotionEvent event, float toPercent);
     float getAnimationPercent();
 
     /**
      * 设置动画到某一帧的状态
      * 用于滑动过程中实时改变animationview的状态
      * @param percent 当前处于动画的位置百分比
+     * @param event
      * @param isVertical
      */
-    void setAnimationPercent(float percent, boolean isVertical);
+    void setAnimationPercent(float percent, MotionEvent event, boolean isVertical);
     void setDuration(long duration);
     void setOnAnimationViewListener(OnAnimationViewListener onAnimationViewListener);
 }

@@ -297,29 +297,9 @@ public class AnimationListView extends FrameLayout{
                     if (!isAnimationViewVisible()) {
                         setAnimationViewVisible(true);
                     }
-                    /**
-                     * 切换前景背景图
-                     * 如果当前为初始状态即未翻转，或转变了翻转方向则需切换背景图
-                     */
-                    if(mAnimationView.getAnimationPercent() == 0
-                            || mAnimationView.getAnimationPercent() * percent < 0) {
-                        //前景图是当前页面，即缓存页面中的第二个
-                        Bitmap frontBitmap = getViewBitmap(mCacheItems.get(1));
-                        Bitmap backBitmap = null;
-                        /**
-                         * 背景图根据翻转方向不同改变。
-                         * 如果要翻到上一页，则背景图为缓存页面中的第一个
-                         * 如果要翻到下一页，则背景图为缓存页面中的第二个
-                         */
-                        if (isVertical) {
-                            backBitmap = getViewBitmap(mCacheItems.get(mMoveY > 0 ? 0 : 2));
-                        } else {
-                            backBitmap = getViewBitmap(mCacheItems.get(mMoveX > 0 ? 0 : 2));
-                        }
-                        //初始化动画组件
-                        initAniamtionView(frontBitmap, backBitmap);
-                    }
-                    mAnimationView.setAnimationPercent(percent, isVertical);
+                    //装载或切换动画的图片
+                    switchAniamtionBitmap(percent);
+                    mAnimationView.setAnimationPercent(percent, event, isVertical);
                 }
                 mTmpX = event.getX();
                 mTmpY = event.getY();
@@ -355,7 +335,7 @@ public class AnimationListView extends FrameLayout{
                 }
                 //如果可以翻页，则播放翻页动画
                 if(canPage(mMoveX, mMoveY, toPercent)) {
-                    mAnimationView.startAnimation(isVertical, toPercent);
+                    mAnimationView.startAnimation(isVertical, event, toPercent);
                 }
                 mMoveX = 0;
                 mMoveY = 0;
@@ -413,6 +393,32 @@ public class AnimationListView extends FrameLayout{
                  */
                 return toPercent >= 0 || mCurrentPosition < mAdapter.getCount() - 1;
             }
+        }
+    }
+
+    /**
+     * 装载或切换前景背景图
+     * @param percent
+     */
+    private void switchAniamtionBitmap(float percent){
+        //如果当前为初始状态即未翻转，或转变了翻转方向则需切换背景图
+        if(mAnimationView.getAnimationPercent() == 0
+                || mAnimationView.getAnimationPercent() * percent < 0) {
+            //前景图是当前页面，即缓存页面中的第二个
+            Bitmap frontBitmap = getViewBitmap(mCacheItems.get(1));
+            Bitmap backBitmap = null;
+            /**
+             * 背景图根据翻转方向不同改变。
+             * 如果要翻到上一页，则背景图为缓存页面中的第一个
+             * 如果要翻到下一页，则背景图为缓存页面中的第二个
+             */
+            if (isVertical) {
+                backBitmap = getViewBitmap(mCacheItems.get(mMoveY > 0 ? 0 : 2));
+            } else {
+                backBitmap = getViewBitmap(mCacheItems.get(mMoveX > 0 ? 0 : 2));
+            }
+            //初始化动画组件
+            initAniamtionView(frontBitmap, backBitmap);
         }
     }
 

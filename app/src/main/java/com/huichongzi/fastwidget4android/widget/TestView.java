@@ -2,16 +2,14 @@ package com.huichongzi.fastwidget4android.widget;
 
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Matrix;
-import android.graphics.Rect;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Path;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.huichongzi.fastwidget4android.R;
 
 public class TestView extends View {
 
@@ -42,14 +40,20 @@ public class TestView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.page_a);
-        float[] verts = {
-                0, 0,
-                getWidth() - 100 , -100,
-                0 , getHeight(),
-                getWidth() - 300  , getHeight() - 100
-        };
-        canvas.drawBitmapMesh(bitmap, 1, 1, verts, 0, null, 0, null);
+        Path pathA = new Path();
+        Paint paintA = new Paint();
+        paintA.setAntiAlias(true);
+        paintA.setColor(Color.BLUE);
+        paintA.setStyle(Paint.Style.STROKE);
+        paintA.setStrokeWidth(5);
+        pathA.reset();
+        pathA.quadTo(0, 200, 200, 200);
+        canvas.drawPath(pathA, paintA);
+        Paint paintB = new Paint();
+        paintB.setStrokeWidth(5);
+        paintB.setColor(Color.RED);
+        canvas.drawPoint(25, 75, paintB);
+
         super.onDraw(canvas);
     }
 
