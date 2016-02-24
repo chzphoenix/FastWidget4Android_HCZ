@@ -2,6 +2,7 @@ package com.huichongzi.fastwidget4android.activity;
 
 
 import android.app.Activity;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,9 @@ public class TestActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.test_act);
+		BookPageView bookPageView = (BookPageView)findViewById(R.id.test);
+		bookPageView.setBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.page_a),
+				BitmapFactory.decodeResource(getResources(), R.drawable.page_b));
 		initView();
 	}
 
