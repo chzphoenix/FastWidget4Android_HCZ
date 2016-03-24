@@ -12,10 +12,8 @@ import android.widget.TextView;
 
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.huichongzi.fastwidget4android.R;
-import com.huichongzi.fastwidget4android.adapter.AnimationListAdapter;
-import com.huichongzi.fastwidget4android.adapter.RecycleScrollViewAdapter;
-import com.huichongzi.fastwidget4android.widget.AnimationListView;
 import com.huichongzi.fastwidget4android.widget.PullToRefreshRecyclerView;
+import com.huichongzi.fastwidget4android.widget.WrapRecyclerView;
 
 
 public class PullToRefreshRecyclerViewActivity extends Activity {
@@ -30,18 +28,18 @@ public class PullToRefreshRecyclerViewActivity extends Activity {
 	private void initView(){
 		PullToRefreshRecyclerView pullToRefreshRecyclerView = (PullToRefreshRecyclerView)findViewById(R.id.pulltorefresh_recyclerview_act_list);
 		pullToRefreshRecyclerView.setMode(PullToRefreshBase.Mode.BOTH);
-		pullToRefreshRecyclerView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<RecyclerView>() {
+		pullToRefreshRecyclerView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<WrapRecyclerView>() {
 			@Override
-			public void onPullDownToRefresh(PullToRefreshBase<RecyclerView> refreshView) {
+			public void onPullDownToRefresh(PullToRefreshBase<WrapRecyclerView> refreshView) {
 				Log.e("sfaga", "fawrgerh");
 			}
 
 			@Override
-			public void onPullUpToRefresh(PullToRefreshBase<RecyclerView> refreshView) {
+			public void onPullUpToRefresh(PullToRefreshBase<WrapRecyclerView> refreshView) {
 				Log.e("sfaga", "fgetryuk");
 			}
 		});
-		RecyclerView recyclerView = pullToRefreshRecyclerView.getRefreshableView();
+		WrapRecyclerView recyclerView = pullToRefreshRecyclerView.getRefreshableView();
 		MyAdapter adapter = new MyAdapter();
 		recyclerView.setLayoutManager(new LinearLayoutManager(this));
 		recyclerView.setAdapter(adapter);

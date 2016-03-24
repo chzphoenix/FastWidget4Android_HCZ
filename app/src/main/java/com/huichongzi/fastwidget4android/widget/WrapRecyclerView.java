@@ -2,10 +2,10 @@ package com.huichongzi.fastwidget4android.widget;
 
 import android.content.Context;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -45,6 +45,10 @@ public class WrapRecyclerView extends RecyclerView {
 
     public void addFooterView(View footer){
         mWrapAdapter.addFooterView(footer);
+    }
+
+    public void setSelection(int position){
+        scrollToPosition(position);
     }
 
     @Override
@@ -88,6 +92,45 @@ public class WrapRecyclerView extends RecyclerView {
     @Override
     public ViewHolder findViewHolderForAdapterPosition(int position) {
         return super.findViewHolderForAdapterPosition(position + mWrapAdapter.getHeaderCount());
+    }
+
+    public int getCount(){
+        return mWrapAdapter.getItemCount();
+    }
+
+    public int getFirstVisiblePosition(){
+        int firstPosition = 0;
+        RecyclerView.LayoutManager layoutManager = getLayoutManager();
+        if(layoutManager instanceof LinearLayoutManager){
+            firstPosition = ((LinearLayoutManager) layoutManager).findFirstVisibleItemPosition();
+        }
+        if(layoutManager instanceof GridLayoutManager){
+            firstPosition = ((GridLayoutManager) layoutManager).findFirstVisibleItemPosition();
+        }
+        if(layoutManager instanceof StaggeredGridLayoutManager){
+            int[] positions = null;
+            ((StaggeredGridLayoutManager) layoutManager).findFirstVisibleItemPositions(positions);
+            firstPosition = positions[0];
+        }
+        return firstPosition;
+    }
+
+
+    public int getLastVisiblePosition(){
+        int lastPosition = 0;
+        RecyclerView.LayoutManager layoutManager = getLayoutManager();
+        if(layoutManager instanceof LinearLayoutManager){
+            lastPosition = ((LinearLayoutManager) layoutManager).findLastVisibleItemPosition();
+        }
+        if(layoutManager instanceof GridLayoutManager){
+            lastPosition = ((GridLayoutManager) layoutManager).findLastVisibleItemPosition();
+        }
+        if(layoutManager instanceof StaggeredGridLayoutManager){
+            int[] positions = null;
+            ((StaggeredGridLayoutManager) layoutManager).findLastVisibleItemPositions(positions);
+            lastPosition = positions[positions.length - 1];
+        }
+        return lastPosition;
     }
 
 

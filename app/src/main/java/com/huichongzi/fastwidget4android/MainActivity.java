@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.huichongzi.fastwidget4android.activity.BannerViewActivity;
 import com.huichongzi.fastwidget4android.activity.BlindsListViewActivity;
+import com.huichongzi.fastwidget4android.activity.BookActivity;
 import com.huichongzi.fastwidget4android.activity.DragGridViewActivity;
 import com.huichongzi.fastwidget4android.activity.FolioListViewActivity;
 import com.huichongzi.fastwidget4android.activity.PullToRefreshRecyclerViewActivity;
@@ -29,11 +30,11 @@ public class MainActivity extends Activity {
     private static final String[] names = {"循环轮播BannerView", "可拖动排序的GridView",
             "翻转展示的ListView", "百叶窗ListView", "水晶球进度条",
             "可回收scrollview", "刷新RecyclerView", "带header和footer的RecyclerView",
-            "测试"};
+            "仿书页", "测试"};
     private static final Class[] clazzs = {BannerViewActivity.class, DragGridViewActivity.class,
             FolioListViewActivity.class, BlindsListViewActivity.class, WaveBallProgressActivity.class,
             RecycleScrollViewActivity.class, PullToRefreshRecyclerViewActivity.class,
-            WrapRecyclerViewActivity.class, TestActivity.class};
+            WrapRecyclerViewActivity.class, BookActivity.class, TestActivity.class};
 
     private ListView list;
     @Override

@@ -23,6 +23,7 @@
         <activity android:name=".activity.RecycleScrollViewActivity"/>
         <activity android:name=".activity.PullToRefreshRecyclerViewActivity"/>
         <activity android:name=".activity.WrapRecyclerViewActivity"/>
+        <activity android:name=".activity.BookActivity"/>
         <activity android:name=".activity.TestActivity"/>
     </application>
 
