@@ -19,6 +19,8 @@ import java.util.ArrayList;
 public class WrapRecyclerView extends RecyclerView {
 
     private WrapAdapter mWrapAdapter;
+    private OnItemClickListener mOnItemClickListener;
+    private OnItemLongClickListener mOnItemLongClickListener;
 
     public WrapRecyclerView(Context context) {
         super(context);
@@ -39,12 +41,40 @@ public class WrapRecyclerView extends RecyclerView {
         mWrapAdapter = new WrapAdapter();
     }
 
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener){
+        this.mOnItemClickListener = onItemClickListener;
+    }
+
+    public void setOnItemLongClickListener(OnItemLongClickListener onItemLongClickListener){
+        this.mOnItemLongClickListener = onItemLongClickListener;
+    }
+
     public void addHeaderView(View header){
+        if(header == null){
+            return;
+        }
         mWrapAdapter.addHeaderView(header);
     }
 
     public void addFooterView(View footer){
+        if(footer == null){
+            return;
+        }
         mWrapAdapter.addFooterView(footer);
+    }
+
+    public void removeHeaderView(View header){
+        if(header == null){
+            return;
+        }
+        mWrapAdapter.removeHeaderView(header);
+    }
+
+    public void removeFooterView(View footer){
+        if(footer == null){
+            return;
+        }
+        mWrapAdapter.removeHeaderView(footer);
     }
 
     public void setSelection(int position){
@@ -187,10 +217,13 @@ public class WrapRecyclerView extends RecyclerView {
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            if (isHeader(position) || isFooter(position)){
+            if (holder instanceof WrapViewHolder){
             }
             else {
-                mAdapter.onBindViewHolder(holder, position - getHeaderCount());
+                int realPosition = position - getHeaderCount();
+                mAdapter.onBindViewHolder(holder, realPosition);
+                holder.itemView.setOnClickListener(new OnPositionClick(realPosition));
+                holder.itemView.setOnLongClickListener(new OnPositionLongClick(realPosition));
             }
         }
 
@@ -309,5 +342,41 @@ public class WrapRecyclerView extends RecyclerView {
                 super(itemView);
             }
         }
+
+        class OnPositionClick implements OnClickListener{
+            private int position;
+            public OnPositionClick(int position){
+                this.position = position;
+            }
+            @Override
+            public void onClick(View v) {
+                if(mOnItemClickListener != null){
+                    mOnItemClickListener.onItemClick(v, position);
+                }
+            }
+        }
+
+        class OnPositionLongClick implements OnLongClickListener{
+            private int position;
+            public OnPositionLongClick(int position){
+                this.position = position;
+            }
+            @Override
+            public boolean onLongClick(View v) {
+                if(mOnItemLongClickListener != null){
+                    mOnItemLongClickListener.onItemLongClick(v, position);
+                    return true;
+                }
+                return false;
+            }
+        }
+    }
+
+    public interface OnItemClickListener{
+        public void onItemClick(View view, int position);
+    }
+
+    public interface OnItemLongClickListener{
+        public void onItemLongClick(View view, int position);
     }
 }

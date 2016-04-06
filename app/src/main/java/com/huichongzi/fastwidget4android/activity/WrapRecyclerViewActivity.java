@@ -2,10 +2,9 @@ package com.huichongzi.fastwidget4android.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -49,6 +48,19 @@ public class WrapRecyclerViewActivity extends Activity {
         TextView footer2 = new TextView(this);
         footer2.setText("footer2");
         view.addFooterView(footer2);
+
+        view.setOnItemClickListener(new WrapRecyclerView.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Log.e("sss", "item click " + position);
+            }
+        });
+        view.setOnItemLongClickListener(new WrapRecyclerView.OnItemLongClickListener() {
+            @Override
+            public void onItemLongClick(View view, int position) {
+                Log.e("sss", "item long click " + position);
+            }
+        });
     }
 
 
