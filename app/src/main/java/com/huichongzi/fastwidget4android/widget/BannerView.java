@@ -294,7 +294,8 @@ public class BannerView extends RelativeLayout {
         else{
             mTitleView.setVisibility(View.GONE);
         }
-        mTitleView.setText(mBannerAdapter.getTitle(mCurrentIndex) == null ? "" : mBannerAdapter.getTitle(mCurrentIndex));
+        String title= mBannerAdapter.getTitle(mCurrentIndex % mBannerAdapter.getSize());
+        mTitleView.setText(title == null ? "" : title);
         initIndicators();
     }
 
@@ -360,7 +361,8 @@ public class BannerView extends RelativeLayout {
             view.setSelected(i == mCurrentIndex);
         }
         mIndicatorView.invalidate();
-        mTitleView.setText(mBannerAdapter.getTitle(mCurrentIndex) == null ? "" : mBannerAdapter.getTitle(mCurrentIndex));
+        String title= mBannerAdapter.getTitle(mCurrentIndex % mBannerAdapter.getSize());
+        mTitleView.setText(title == null ? "" : title);
     }
 
     /**
@@ -458,12 +460,12 @@ public class BannerView extends RelativeLayout {
              */
             for(View view : list){
                 if(view.getParent() == null){
-                    item = getView(position, view);
+                    item = getView(position % getSize(), view);
                     break;
                 }
             }
             if(item == null){
-                item = getView(position, null);
+                item = getView(position % getSize(), null);
                 list.add(item);
             }
             container.addView(item);

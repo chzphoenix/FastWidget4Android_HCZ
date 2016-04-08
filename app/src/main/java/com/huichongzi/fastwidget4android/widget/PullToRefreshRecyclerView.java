@@ -3,6 +3,7 @@ package com.huichongzi.fastwidget4android.widget;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.view.View;
 
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 
@@ -58,16 +59,28 @@ public class PullToRefreshRecyclerView extends PullToRefreshBase<WrapRecyclerVie
     protected boolean isReadyForPullEnd() {
         int lastPosition = getRefreshableView().getLastVisiblePosition();
         RecyclerView.LayoutManager layoutManager = getRefreshableView().getLayoutManager();
-        int lastBottom = layoutManager.findViewByPosition(lastPosition).getBottom();
-        return lastPosition == getRefreshableView().getAdapter().getItemCount() - 1 && lastBottom <= getRefreshableView().getBottom();
+        View lastView = layoutManager.findViewByPosition(lastPosition);
+        if(lastView != null) {
+            int lastBottom = lastView.getBottom();
+            return lastPosition == getRefreshableView().getAdapter().getItemCount() - 1 && lastBottom <= getRefreshableView().getBottom();
+        }
+        else{
+            return true;
+        }
     }
 
     @Override
     protected boolean isReadyForPullStart() {
         int firstPosition = getRefreshableView().getFirstVisiblePosition();
         RecyclerView.LayoutManager layoutManager = getRefreshableView().getLayoutManager();
-        int firstTop = layoutManager.findViewByPosition(firstPosition).getTop();
-        return firstPosition == 0 && firstTop >= 0;
+        View firstView = layoutManager.findViewByPosition(firstPosition);
+        if(firstView != null) {
+            int firstTop = firstView.getTop();
+            return firstPosition == 0 && firstTop >= 0;
+        }
+        else{
+            return true;
+        }
     }
 
 }

@@ -35,7 +35,7 @@ public class BannerViewActivity extends Activity {
 			if(item == null) {
 				item = new ImageView(BannerViewActivity.this);
 			}
-			((ImageView)item).setImageResource(imgs[position % imgs.length]);
+			((ImageView)item).setImageResource(imgs[position]);
 			return item;
 		}
 
@@ -46,7 +46,7 @@ public class BannerViewActivity extends Activity {
 
 		@Override
 		public String getTitle(int position) {
-			return titles[position % imgs.length];
+			return titles[position];
 		}
 
 		@Override
