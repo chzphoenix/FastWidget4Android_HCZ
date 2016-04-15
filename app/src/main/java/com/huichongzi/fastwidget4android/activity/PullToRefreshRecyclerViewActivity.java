@@ -3,9 +3,12 @@ package com.huichongzi.fastwidget4android.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -18,6 +21,21 @@ import com.huichongzi.fastwidget4android.widget.WrapRecyclerView;
 
 public class PullToRefreshRecyclerViewActivity extends Activity {
 
+	private PullToRefreshRecyclerView pullToRefreshRecyclerView;
+
+	private WrapRecyclerView recyclerView;
+
+	private View header1;
+
+	private Handler mHandler = new Handler(){
+		@Override
+		public void handleMessage(Message msg) {
+			super.handleMessage(msg);
+			pullToRefreshRecyclerView.onRefreshComplete();
+			recyclerView.addHeaderView(header1);
+		}
+	};
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -26,23 +44,28 @@ public class PullToRefreshRecyclerViewActivity extends Activity {
 	}
 
 	private void initView(){
-		PullToRefreshRecyclerView pullToRefreshRecyclerView = (PullToRefreshRecyclerView)findViewById(R.id.pulltorefresh_recyclerview_act_list);
+		pullToRefreshRecyclerView = (PullToRefreshRecyclerView)findViewById(R.id.pulltorefresh_recyclerview_act_list);
 		pullToRefreshRecyclerView.setMode(PullToRefreshBase.Mode.BOTH);
 		pullToRefreshRecyclerView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<WrapRecyclerView>() {
 			@Override
 			public void onPullDownToRefresh(PullToRefreshBase<WrapRecyclerView> refreshView) {
 				Log.e("sfaga", "fawrgerh");
+				mHandler.sendEmptyMessageDelayed(0, 2000);
 			}
 
 			@Override
 			public void onPullUpToRefresh(PullToRefreshBase<WrapRecyclerView> refreshView) {
 				Log.e("sfaga", "fgetryuk");
+				mHandler.sendEmptyMessageDelayed(0, 2000);
 			}
 		});
-		WrapRecyclerView recyclerView = pullToRefreshRecyclerView.getRefreshableView();
+		recyclerView = pullToRefreshRecyclerView.getRefreshableView();
 		MyAdapter adapter = new MyAdapter();
 		recyclerView.setLayoutManager(new LinearLayoutManager(this));
 		recyclerView.setAdapter(adapter);
+
+		header1 = LayoutInflater.from(this).inflate(R.layout.wrap_recycleview_header, null);
+		recyclerView.addHeaderView(header1);
 	}
 
 
@@ -61,7 +84,7 @@ public class PullToRefreshRecyclerViewActivity extends Activity {
 
 		@Override
 		public int getItemCount() {
-			return 100;
+			return 0;
 		}
 	}
 

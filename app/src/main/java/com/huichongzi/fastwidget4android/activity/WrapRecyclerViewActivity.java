@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -33,8 +34,7 @@ public class WrapRecyclerViewActivity extends Activity {
         //view.setLayoutManager(new GridLayoutManager(this, 3));
         view.setAdapter(new MyAdapter());
 
-        TextView header1 = new TextView(this);
-        header1.setText("header1");
+        View header1 = LayoutInflater.from(this).inflate(R.layout.wrap_recycleview_header, null);
         view.addHeaderView(header1);
 
         TextView header2 = new TextView(this);

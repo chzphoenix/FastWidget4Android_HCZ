@@ -288,7 +288,9 @@ public class WrapRecyclerView extends RecyclerView {
             if(mHeaderViews == null){
                 mHeaderViews = new ArrayList<View>();
             }
-            mHeaderViews.add(header);
+            if(!mHeaderViews.contains(header)) {
+                mHeaderViews.add(header);
+            }
             notifyDataSetChanged();
         }
 
@@ -310,7 +312,9 @@ public class WrapRecyclerView extends RecyclerView {
             if(mFooterViews == null){
                 mFooterViews = new ArrayList<View>();
             }
-            mFooterViews.add(footer);
+            if(!mFooterViews.contains(footer)) {
+                mFooterViews.add(footer);
+            }
             notifyDataSetChanged();
         }
 
