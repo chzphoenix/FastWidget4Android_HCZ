@@ -6,6 +6,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.huichongzi.fastwidget4android.R;
 
 /**
  * @author chz
@@ -50,6 +51,7 @@ public class PullToRefreshRecyclerView extends PullToRefreshBase<WrapRecyclerVie
                 }
             }
         });
+        recyclerView.setId(R.id.pulltorefresh_recyclerview);
         return recyclerView;
     }
 
