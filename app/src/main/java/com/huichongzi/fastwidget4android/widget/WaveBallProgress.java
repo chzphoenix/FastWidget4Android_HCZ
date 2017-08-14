@@ -181,6 +181,10 @@ public class WaveBallProgress extends View {
         mWaveHeightB = waveHeightB;
     }
 
+    public void startProgress(int progress){
+        startProgress(progress, 1000, 0);
+    }
+
     /**
      * 设置进度，并且以动画的形式上涨到该进度
      * @param progress 进度

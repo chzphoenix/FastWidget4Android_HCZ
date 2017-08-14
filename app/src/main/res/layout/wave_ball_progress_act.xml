@@ -9,4 +9,13 @@
         android:layout_centerInParent="true"
         android:layout_width="100dp"
         android:layout_height="100dp"/>
+
+    <SeekBar
+        style="@android:style/Widget.Holo.SeekBar"
+        android:id="@+id/seekbar"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/wave_ball_progress_act_view"
+        android:layout_marginTop="50dp"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"/>
 </RelativeLayout>
