@@ -20,7 +20,7 @@ public class WaveBallProgressActivity extends Activity {
 
 	private void initView(){
 		WaveBallProgress progress = (WaveBallProgress)findViewById(R.id.wave_ball_progress_act_view);
-		progress.startProgress(50, 2000, 500);
+		progress.startProgress(50, 2000, 0);
 	}
 
 }

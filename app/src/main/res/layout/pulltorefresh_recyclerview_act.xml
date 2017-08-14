@@ -1,7 +1,0 @@
-<com.huichongzi.fastwidget4android.widget.PullToRefreshRecyclerView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/pulltorefresh_recyclerview_act_list"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
-</com.huichongzi.fastwidget4android.widget.PullToRefreshRecyclerView>

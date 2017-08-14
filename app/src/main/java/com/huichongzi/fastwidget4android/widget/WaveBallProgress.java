@@ -3,6 +3,7 @@ package com.huichongzi.fastwidget4android.widget;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
+import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -14,7 +15,6 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
 import android.os.Build;
 import android.os.Handler;
-import android.os.Message;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -85,7 +85,6 @@ public class WaveBallProgress extends View {
      * 波浪停止的动画
      */
     private ObjectAnimator mWaveStopAnimator;
-    private Handler mWaveHandler;
 
     public WaveBallProgress(Context context) {
         super(context);
@@ -116,8 +115,6 @@ public class WaveBallProgress extends View {
         mWaveHeightA = DisplayUtils.dip2px(getContext(), 10);
         mWaveHeightB = DisplayUtils.dip2px(getContext(), 5);
 
-        mWaveHandler = new ProgressHandler(this);
-
         /**
          * 创建波浪停止动画
          * 两条波浪振幅逐渐减小
@@ -141,6 +138,15 @@ public class WaveBallProgress extends View {
             public void onAnimationRepeat(Animator animation) {
             }
         });
+        mWaveStopAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                //改变曲线的偏移，达到波浪运动的效果
+                mOffsetA += mWaveSpeedA;
+                mOffsetB += mWaveSpeedB;
+                invalidate();
+            }
+        });
     }
 
     /**
@@ -155,9 +161,8 @@ public class WaveBallProgress extends View {
      * 设置进度
      * @param progress
      */
-    public void setProgress(int progress) {
+    private void setProgress(int progress) {
         mProgress = progress;
-        isWaveMoving = true;
     }
 
     public int getWaveHeightA() {
@@ -211,45 +216,16 @@ public class WaveBallProgress extends View {
             public void onAnimationRepeat(Animator animation) {
             }
         });
+        mProgressAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                //改变曲线的偏移，达到波浪运动的效果
+                mOffsetA += mWaveSpeedA;
+                mOffsetB += mWaveSpeedB;
+                invalidate();
+            }
+        });
         mProgressAnimator.start();
-    }
-
-    /**
-     * 刷新方法
-     * 用handler来实现不停的刷新界面，每次改变两条波浪的偏移，实现波浪运动的效果
-     */
-    private void update() {
-        if(isWaveMoving) {
-            mWaveHandler.removeMessages(HANDLER_WHAT_UPDATE);
-            mWaveHandler.sendEmptyMessageDelayed(HANDLER_WHAT_UPDATE, 10);
-            mOffsetA += mWaveSpeedA;
-            mOffsetB += mWaveSpeedB;
-        }
-        invalidate();
-    }
-
-    @Override
-    public void setVisibility(int visibility) {
-        super.setVisibility(visibility);
-        if(visibility == VISIBLE){
-            update();
-        }
-        else{
-            mWaveHandler.removeMessages(HANDLER_WHAT_UPDATE);
-        }
-    }
-
-
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        update();
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        mWaveHandler.removeMessages(HANDLER_WHAT_UPDATE);
     }
 
     @Override
@@ -283,8 +259,6 @@ public class WaveBallProgress extends View {
             Canvas canvas = new Canvas(mBallBitmap);
             RectF ball = new RectF(0, 0, w, h);
             canvas.drawOval(ball, mWavePaint);
-
-            update();
         }
     }
 
@@ -292,6 +266,13 @@ public class WaveBallProgress extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         if (getHeight() > 0 && getWidth() > 0) {
+            //绘制边缘
+            Paint paint = new Paint();
+            paint.setColor(mWaveColor);
+            paint.setStyle(Paint.Style.STROKE);
+            RectF edge = new RectF(0, 0, getWidth(), getHeight());
+            canvas.drawArc(edge, 0, 360, false, paint);
+
             canvas.drawColor(Color.TRANSPARENT);
             int sc = canvas.saveLayer(0, 0, getWidth(), getHeight(), null, Canvas.ALL_SAVE_FLAG);
             if (isWaveMoving) {
@@ -305,7 +286,7 @@ public class WaveBallProgress extends View {
                 }
             } else {
                 /**
-                 * 如果有波浪，则绘制两次矩形
+                 * 如果没有波浪，则绘制两次矩形
                  * 之所以绘制两次，是因为波浪有两条，所以除了浪尖的部分，其他部分都是重合的，颜色较重
                  */
                 float height = (1 - mProgress / 100.0f) * getHeight();
@@ -334,21 +315,4 @@ public class WaveBallProgress extends View {
         return waveHeight * Math.sin(waveCycle * (x + offset)) + (1 - mProgress / 100.0) * getHeight();
     }
 
-    static class ProgressHandler extends Handler {
-        private WaveBallProgress mWaveBallProgress;
-
-        public ProgressHandler(WaveBallProgress waveBallProgress) {
-            mWaveBallProgress = waveBallProgress;
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case HANDLER_WHAT_UPDATE:
-                    mWaveBallProgress.update();
-                    break;
-            }
-        }
-    }
 }

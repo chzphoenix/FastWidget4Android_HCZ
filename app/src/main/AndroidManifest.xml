@@ -6,6 +6,7 @@
     <application
         android:allowBackup="true"
         android:supportsRtl="true"
+        android:theme="@android:style/Theme.Light.NoTitleBar"
         android:label="@string/app_name">
         <activity
             android:name=".MainActivity">
@@ -21,8 +22,6 @@
         <activity android:name=".activity.BlindsListViewActivity"/>
         <activity android:name=".activity.WaveBallProgressActivity"/>
         <activity android:name=".activity.RecycleScrollViewActivity"/>
-        <activity android:name=".activity.PullToRefreshRecyclerViewActivity"/>
-        <activity android:name=".activity.WrapRecyclerViewActivity"/>
         <activity android:name=".activity.BookActivity"/>
         <activity android:name=".activity.TestActivity"/>
     </application>
