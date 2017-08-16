@@ -16,6 +16,7 @@ import android.graphics.RectF;
 import android.os.Build;
 import android.os.Handler;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import com.huichongzi.fastwidget4android.utils.DisplayUtils;
@@ -108,45 +109,10 @@ public class WaveBallProgress extends View {
     }
 
     private void init() {
-        //初始化画笔及基础参数
+        //初始化画笔
         mWavePaint = new Paint();
         mWavePaint.setColor(mWaveColor);
         mWavePaint.setFilterBitmap(true);
-        mWaveHeightA = DisplayUtils.dip2px(getContext(), 10);
-        mWaveHeightB = DisplayUtils.dip2px(getContext(), 5);
-
-        /**
-         * 创建波浪停止动画
-         * 两条波浪振幅逐渐减小
-         */
-        PropertyValuesHolder holderA = PropertyValuesHolder.ofInt("WaveHeightA", 0);
-        PropertyValuesHolder holderB = PropertyValuesHolder.ofInt("WaveHeightB", 0);
-        mWaveStopAnimator = ObjectAnimator.ofPropertyValuesHolder(this, holderA, holderB);
-        mWaveStopAnimator.setDuration(1000);
-        mWaveStopAnimator.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-            }
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                isWaveMoving = false;
-            }
-            @Override
-            public void onAnimationCancel(Animator animation) {
-            }
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-            }
-        });
-        mWaveStopAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                //改变曲线的偏移，达到波浪运动的效果
-                mOffsetA += mWaveSpeedA;
-                mOffsetB += mWaveSpeedB;
-                invalidate();
-            }
-        });
     }
 
     /**
@@ -244,10 +210,13 @@ public class WaveBallProgress extends View {
              */
             mWaveSpeedA = w / 10;
             mWaveSpeedB = w / 17;
+            mWaveHeightA = DisplayUtils.dip2px(getContext(), 10);
+            mWaveHeightB = DisplayUtils.dip2px(getContext(), 5);
             if (h / 10 < mWaveHeightA) {
                 mWaveHeightA = h / 10;
-                mWaveHeightA = h / 20;
+                mWaveHeightB = h / 20;
             }
+            initStopAnimator(mWaveHeightA, mWaveHeightB);
             mWaveACycle = (float) (3 * Math.PI / w);
             mWaveBCycle = (float) (4 * Math.PI / w);
 
@@ -264,6 +233,45 @@ public class WaveBallProgress extends View {
             RectF ball = new RectF(0, 0, w, h);
             canvas.drawOval(ball, mWavePaint);
         }
+    }
+
+    private void initStopAnimator(final int waveHeightA, final int waveHeightB){
+        /**
+         * 创建波浪停止动画
+         * 两条波浪振幅逐渐减小
+         */
+        PropertyValuesHolder holderA = PropertyValuesHolder.ofInt("WaveHeightA", 0);
+        PropertyValuesHolder holderB = PropertyValuesHolder.ofInt("WaveHeightB", 0);
+        mWaveStopAnimator = ObjectAnimator.ofPropertyValuesHolder(this, holderA, holderB);
+        mWaveStopAnimator.setDuration(1000);
+        mWaveStopAnimator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+            }
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                isWaveMoving = false;
+                mWaveHeightA = waveHeightA;
+                mWaveHeightB = waveHeightB;
+            }
+            @Override
+            public void onAnimationCancel(Animator animation) {
+                mWaveHeightA = waveHeightA;
+                mWaveHeightB = waveHeightB;
+            }
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+            }
+        });
+        mWaveStopAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                //改变曲线的偏移，达到波浪运动的效果
+                mOffsetA += mWaveSpeedA;
+                mOffsetB += mWaveSpeedB;
+                invalidate();
+            }
+        });
     }
 
     @Override
