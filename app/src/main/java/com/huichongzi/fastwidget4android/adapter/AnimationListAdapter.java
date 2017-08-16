@@ -46,19 +46,19 @@ public class AnimationListAdapter extends BaseAdapter {
             holder = new ViewHolder();
             convertView = LayoutInflater.from(mContext).inflate(R.layout.animation_listview_item, null);
             holder.img = (ImageView)convertView.findViewById(R.id.animation_listview_item_img);
-            holder.text = (TextView)convertView.findViewById(R.id.animation_listview_item_text);
+            holder.title = (TextView)convertView.findViewById(R.id.animation_listview_item_title);
             convertView.setTag(holder);
         }
         else{
             holder = (ViewHolder)convertView.getTag();
         }
         holder.img.setImageResource(imgs[position]);
-        holder.text.setText("page " + position);
+        holder.title.setText("page " + position);
         return convertView;
     }
 
     class ViewHolder{
         public ImageView img;
-        public TextView text;
+        public TextView title;
     }
 }

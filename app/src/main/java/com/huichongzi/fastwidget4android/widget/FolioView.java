@@ -37,7 +37,7 @@ public class FolioView extends View implements AnimationViewInterface{
      */
     private float mFolioY;
     private float mCurrentPercent;
-    private long mduration = 500;
+    private long mduration = 2000;
 
     /**
      * 前景图
@@ -145,7 +145,7 @@ public class FolioView extends View implements AnimationViewInterface{
         canvas.drawBitmap(topBitmap, topHoldSrc, topHoldDst, null);
 
         /**
-         * 在下半部分绘制topBitmap的上半
+         * 在下半部分绘制bottomBitmap的下半
          */
         Rect bottomHoldSrc = new Rect(0, bottomBitmap.getHeight() / 2, bottomBitmap.getWidth(), mBackBitmap.getHeight());
         Rect bottomHoldDst = new Rect(0, getHeight() / 2, getWidth(), getHeight());

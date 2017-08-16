@@ -1,28 +1,45 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+              android:orientation="vertical"
+                android:background="#ffff"
     >
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="翻转效果展示"
+        android:textSize="20dp"
+        android:layout_marginTop="40dp"
+        android:gravity="center"/>
+
+    <RatingBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:gravity="center"/>
 
     <ImageView
         android:id="@+id/animation_listview_item_img"
         android:layout_width="match_parent"
-        android:layout_height="400dp"
+        android:layout_height="200dp"
         android:scaleType="fitXY"
         android:src="@drawable/banner_a"/>
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#000000"
         android:text="New Text"
-        android:textSize="30sp"
+        android:textSize="20dp"
+        android:layout_marginTop="40dp"
         android:gravity="center"
-        android:id="@+id/animation_listview_item_text"
-        android:layout_below="@+id/animation_listview_item_img"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"/>
+        android:id="@+id/animation_listview_item_title"/>
 
-</RelativeLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="这是翻转对折效果的实例，无论界面多复杂，都可以实现折叠效果。折叠时遵循近大远小的视觉特性"
+        android:textSize="16dp"
+        android:layout_margin="40dp"/>
+
+</LinearLayout>

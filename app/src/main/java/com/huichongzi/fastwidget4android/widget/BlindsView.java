@@ -28,7 +28,7 @@ public class BlindsView extends LinearLayout implements AnimationViewInterface{
     /**
      * 每个叶面的动画时间
      */
-    private long mDuration = 1500;
+    private long mDuration = 2000;
     /**
      * 每列/行叶面转动相差的角度
      */
