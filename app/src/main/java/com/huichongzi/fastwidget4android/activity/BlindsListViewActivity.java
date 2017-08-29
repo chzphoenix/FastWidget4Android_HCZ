@@ -6,6 +6,7 @@ import android.os.Bundle;
 import com.huichongzi.fastwidget4android.R;
 import com.huichongzi.fastwidget4android.adapter.AnimationListAdapter;
 import com.huichongzi.fastwidget4android.widget.AnimationListView;
+import com.huichongzi.fastwidget4android.widget.BlindsView;
 
 /**
  * @author chz
@@ -24,7 +25,7 @@ public class BlindsListViewActivity extends Activity {
     private void initView(){
         AnimationListView blindsListView = (AnimationListView)findViewById(R.id.blinds_listview_act_list);
         blindsListView.setAdapter(new AnimationListAdapter(this));
-        blindsListView.setAnimationType(AnimationListView.TYPE_BLINDS);
+        blindsListView.setAnimationClass(BlindsView.class);
         blindsListView.setIsVertical(false);
     }
 }

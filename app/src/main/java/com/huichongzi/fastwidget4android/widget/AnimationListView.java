@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Adapter;
 import android.widget.FrameLayout;
 
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,11 +25,7 @@ import java.util.List;
  */
 public class AnimationListView extends FrameLayout{
 
-    public static final int TYPE_BLINDS = 0x100;
-    public static final int TYPE_FOLIO = 0x101;
-
-    public static final int TYPE_RANDOM = 0x999;
-
+    private Class<? extends AnimationViewInterface> animationClass;
     protected int mCurrentPosition;
 
     /**
@@ -103,6 +100,10 @@ public class AnimationListView extends FrameLayout{
         });
         mCurrentPosition = 0;
         refreshByAdapter();
+    }
+
+    public void setAnimationClass(Class<? extends AnimationViewInterface> clazz){
+        animationClass = clazz;
     }
 
     /**
@@ -234,10 +235,6 @@ public class AnimationListView extends FrameLayout{
 
     public void setIsVertical(boolean isVertical) {
         this.isVertical = isVertical;
-    }
-
-    public void setAnimationType(int animationType) {
-        mAnimationType = animationType;
     }
 
     public AnimationViewInterface getAnimationView() {
@@ -428,17 +425,13 @@ public class AnimationListView extends FrameLayout{
      */
     //TODO 添加更多的效果
     private void createAnimationView(){
-        switch (mAnimationType){
-            case TYPE_BLINDS:
-                if(mAnimationView == null || !(mAnimationView instanceof BlindsView)){
-                    mAnimationView = new BlindsView(getContext());
-                }
-                break;
-            case TYPE_FOLIO:
-                if(mAnimationView == null || !(mAnimationView instanceof FolioView)){
-                    mAnimationView = new FolioView(getContext());
-                }
-                break;
+        if(mAnimationView == null){
+            try {
+                Constructor<? extends AnimationViewInterface> constructor = animationClass.getConstructor(Context.class);
+                mAnimationView = constructor.newInstance(getContext());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         mAnimationView.setOnAnimationViewListener(new OnAnimationViewListener() {
             @Override
@@ -452,7 +445,6 @@ public class AnimationListView extends FrameLayout{
             }
         });
     }
-
 
     /**
      * 初始化动画组件
