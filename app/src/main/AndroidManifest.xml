@@ -23,6 +23,7 @@
         <activity android:name=".activity.WaveBallProgressActivity"/>
         <activity android:name=".activity.RecycleScrollViewActivity"/>
         <activity android:name=".activity.BookActivity"/>
+        <activity android:name=".activity.FloodAndSpreadActivity"/>
         <activity android:name=".activity.TestActivity"/>
     </application>
 

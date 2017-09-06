@@ -1,8 +1,10 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    compileSdkVersion 24
+    buildToolsVersion "24.0.2"
 
     defaultConfig {
         applicationId "com.huichongzi.fastwidget4android"
@@ -19,10 +21,19 @@ android {
     }
 }
 
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'org.jetbrains.kotlin:kotlin-android-extensions:1.1.2-4'
+    }
+}
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:support-v4:22.+'
-    compile 'com.loopeer.android.thirdparty:pulltorefresh:2.1.1'
-    compile 'com.android.support:recyclerview-v7:22.+'
+    compile 'org.jetbrains.kotlin:kotlin-stdlib:1.1.2-4'
+    compile "org.jetbrains.anko:anko-common:0.10.0"
 }

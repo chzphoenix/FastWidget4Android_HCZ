@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:layout_width= "match_parent"
+             android:layout_height= "match_parent" >
+    <RelativeLayout
+        android:id="@+id/animation_content"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_gravity="bottom"
+        android:background="#e07468" >
+        <FrameLayout
+            android:id="@+id/spread_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_centerInParent="true"
+            android:background="#000000" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/spread_view"
+            android:drawableBottom="@drawable/camera_top" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/spread_view"
+            android:drawableTop="@drawable/camera_bottom" />
+    </RelativeLayout >
+</FrameLayout>
