@@ -6,7 +6,6 @@ import android.database.DataSetObserver;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Adapter;
@@ -47,7 +46,6 @@ public class AnimationListView extends FrameLayout{
      * 水平/垂直方法翻转
      */
     private boolean isVertical;
-    private int mAnimationType;
     private float mTmpX;
     private float mTmpY;
     private float mMoveX = 0;
@@ -102,10 +100,6 @@ public class AnimationListView extends FrameLayout{
         refreshByAdapter();
     }
 
-    public void setAnimationClass(Class<? extends AnimationViewInterface> clazz){
-        animationClass = clazz;
-    }
-
     /**
      * 重新布局页面
      * 先添加mCacheItems，再添加mFolioView。这样mFolioView一直处于顶端，不会被遮挡。
@@ -133,10 +127,9 @@ public class AnimationListView extends FrameLayout{
                 item = mAdapter.getView(index, item, null);
             }
         }
-        //添加翻转处理的view
-        //addView(mAnimationView, mLayoutParams);
         //刷新界面
         initItemVisible();
+        //添加翻转处理的view
         setAnimationViewVisible(false);
     }
 
@@ -419,11 +412,14 @@ public class AnimationListView extends FrameLayout{
         }
     }
 
+    public void setAnimationClass(Class<? extends AnimationViewInterface> clazz){
+        animationClass = clazz;
+    }
+
     /**
      * 创建动画组件
      * 如果组件以及存在且type一样，则不再创建新的
      */
-    //TODO 添加更多的效果
     private void createAnimationView(){
         if(mAnimationView == null){
             try {
@@ -452,7 +448,6 @@ public class AnimationListView extends FrameLayout{
      * @param frontBitmap
      * @param backBitmap
      */
-    //TODO 添加更多的效果
     private void initAniamtionView(Bitmap frontBitmap, Bitmap backBitmap){
         mAnimationView.setBitmap(frontBitmap, backBitmap);
     }

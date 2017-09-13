@@ -88,132 +88,6 @@ public class BlindsView extends LinearLayout implements AnimationViewInterface{
     }
 
     /**
-     * 设置百叶窗的行列数
-     * 注意这个方法一定要在setBitmap()之前执行才有效果
-     * @param rowCount
-     * @param columnCount
-     */
-    public void setRowsAndColumns(int rowCount, int columnCount){
-        mRowCount = rowCount;
-        mColumnCount = columnCount;
-    }
-
-    @Override
-    public boolean isAnimationRunning(){
-        if(mAnimator == null){
-            return false;
-        }
-        return mAnimator.isRunning();
-    }
-
-    @Override
-    public void startAnimation(boolean isVertical, MotionEvent event, float toPercent){
-        if(mAnimator != null && mAnimator.isRunning()){
-            return;
-        }
-        mAnimator = ValueAnimator.ofFloat(mAnimationPercent, toPercent);
-        //动画持续时间根据起始位置不同
-        mAnimator.setDuration((long) (Math.abs(toPercent - mAnimationPercent) * mDuration));
-        mAnimator.start();
-        OnAnimationListener onAnimationListener = new OnAnimationListener(isVertical, toPercent);
-        mAnimator.addUpdateListener(onAnimationListener);
-        mAnimator.addListener(onAnimationListener);
-    }
-
-    @Override
-    public float getAnimationPercent(){
-        return mAnimationPercent;
-    }
-
-    @Override
-    public void setAnimationPercent(float percent, MotionEvent event, boolean isVertical){
-        mAnimationPercent = percent;
-        //获取总的转动的角度
-        float value = mAnimationPercent * getTotalVaule(isVertical);
-        /**
-         * 遍历每一个小叶面设置当前的角度
-         * 根据转动的方向不同，从不同的位置开始翻转
-         */
-        for(int i = 0; i < mRowCount; i++){
-            LinearLayout parent = (LinearLayout)getChildAt(i);
-            for(int j = 0; j < mColumnCount; j++){
-                RotateView view = (RotateView)parent.getChildAt(j);
-                float subValue;
-                if(value > 0){
-                    if(isVertical){
-                        //向下滑动。从第一行开始转动，每行转动角度依次递减
-                        subValue = value - mSpace * i;
-                    }
-                    else{
-                        //向右滑动。从第一列开始转动，每列转动角度依次递减
-                        subValue = value - mSpace * j;
-                    }
-                    //保证转动角度在0到180度内
-                    if(subValue < 0){
-                        subValue = 0;
-                    }
-                    else if(subValue > 180){
-                        subValue = 180;
-                    }
-                }
-                else{
-                    if(isVertical){
-                        //向下滑动。从最后一行开始转动，每行转动角度依次递减（注意由于value是负数，所以数值上是递增）
-                        subValue = value + mSpace * (mRowCount - i - 1);
-                    }
-                    else{
-                        //向左滑动。从最后一列开始转动，每列转动角度依次递减（注意由于value是负数，所以数值上是递增）
-                        subValue = value + mSpace * (mColumnCount - j - 1);
-                    }
-                    //保证转动角度在0到-180度内
-                    if(subValue < -180){
-                        subValue = -180;
-                    }
-                    else if(subValue > 0){
-                        subValue = 0;
-                    }
-                }
-                //注意，如果是上下翻动，角度需要转为负值，否则转动的方向有误
-                view.setRotation(isVertical ? -subValue : subValue, isVertical);
-            }
-        }
-    }
-
-
-    /**
-     * 获取一次翻面需要的总的转动角度
-     * @param isVertical
-     * @return
-     */
-    private float getTotalVaule(boolean isVertical){
-        if(isVertical) {
-            return mSpace * (mRowCount - 1) + 180;
-        }
-        else{
-            return mSpace * (mColumnCount - 1) + 180;
-        }
-    }
-
-    @Override
-    public void setDuration(long duration) {
-        mDuration = duration;
-    }
-
-    /**
-     * 设置每队叶面翻转相差的角度，即控制叶面翻转速度
-     * @param space
-     */
-    public void setSpace(float space) {
-        mSpace = space;
-    }
-
-
-    @Override
-    public void setOnAnimationViewListener(OnAnimationViewListener onAnimationViewListener) {
-        mOnAnimationViewListener = onAnimationViewListener;
-    }
-
-    /**
      * 获取图片阵列
      * 将大图片分割为rowCount*columnCount阵列的小图片
      * @param rowCount
@@ -309,6 +183,132 @@ public class BlindsView extends LinearLayout implements AnimationViewInterface{
         }
     }
 
+    /**
+     * 设置百叶窗的行列数
+     * 注意这个方法一定要在setBitmap()之前执行才有效果
+     * @param rowCount
+     * @param columnCount
+     */
+    public void setRowsAndColumns(int rowCount, int columnCount){
+        mRowCount = rowCount;
+        mColumnCount = columnCount;
+    }
+
+    @Override
+    public boolean isAnimationRunning(){
+        if(mAnimator == null){
+            return false;
+        }
+        return mAnimator.isRunning();
+    }
+
+    @Override
+    public float getAnimationPercent(){
+        return mAnimationPercent;
+    }
+
+    @Override
+    public void setAnimationPercent(float percent, MotionEvent event, boolean isVertical){
+        mAnimationPercent = percent;
+        //获取总的转动的角度
+        float value = mAnimationPercent * getTotalVaule(isVertical);
+        /**
+         * 遍历每一个小叶面设置当前的角度
+         * 根据转动的方向不同，从不同的位置开始翻转
+         */
+        for(int i = 0; i < mRowCount; i++){
+            LinearLayout parent = (LinearLayout)getChildAt(i);
+            for(int j = 0; j < mColumnCount; j++){
+                RotateView view = (RotateView)parent.getChildAt(j);
+                float subValue;
+                if(value > 0){
+                    if(isVertical){
+                        //向下滑动。从第一行开始转动，每行转动角度依次递减
+                        subValue = value - mSpace * i;
+                    }
+                    else{
+                        //向右滑动。从第一列开始转动，每列转动角度依次递减
+                        subValue = value - mSpace * j;
+                    }
+                    //保证转动角度在0到180度内
+                    if(subValue < 0){
+                        subValue = 0;
+                    }
+                    else if(subValue > 180){
+                        subValue = 180;
+                    }
+                }
+                else{
+                    if(isVertical){
+                        //向下滑动。从最后一行开始转动，每行转动角度依次递减（注意由于value是负数，所以数值上是递增）
+                        subValue = value + mSpace * (mRowCount - i - 1);
+                    }
+                    else{
+                        //向左滑动。从最后一列开始转动，每列转动角度依次递减（注意由于value是负数，所以数值上是递增）
+                        subValue = value + mSpace * (mColumnCount - j - 1);
+                    }
+                    //保证转动角度在0到-180度内
+                    if(subValue < -180){
+                        subValue = -180;
+                    }
+                    else if(subValue > 0){
+                        subValue = 0;
+                    }
+                }
+                //注意，如果是上下翻动，角度需要转为负值，否则转动的方向有误
+                view.setRotation(isVertical ? -subValue : subValue, isVertical);
+            }
+        }
+    }
+
+
+    /**
+     * 获取一次翻面需要的总的转动角度
+     * @param isVertical
+     * @return
+     */
+    private float getTotalVaule(boolean isVertical){
+        if(isVertical) {
+            return mSpace * (mRowCount - 1) + 180;
+        }
+        else{
+            return mSpace * (mColumnCount - 1) + 180;
+        }
+    }
+
+    @Override
+    public void setDuration(long duration) {
+        mDuration = duration;
+    }
+
+    /**
+     * 设置每队叶面翻转相差的角度，即控制叶面翻转速度
+     * @param space
+     */
+    public void setSpace(float space) {
+        mSpace = space;
+    }
+
+
+    @Override
+    public void setOnAnimationViewListener(OnAnimationViewListener onAnimationViewListener) {
+        mOnAnimationViewListener = onAnimationViewListener;
+    }
+
+    @Override
+    public void startAnimation(boolean isVertical, MotionEvent event, float toPercent){
+        if(mAnimator != null && mAnimator.isRunning()){
+            return;
+        }
+        mAnimator = ValueAnimator.ofFloat(mAnimationPercent, toPercent);
+        //动画持续时间根据起始位置不同
+        mAnimator.setDuration((long) (Math.abs(toPercent - mAnimationPercent) * mDuration));
+        mAnimator.start();
+        OnAnimationListener onAnimationListener = new OnAnimationListener(isVertical, toPercent);
+        mAnimator.addUpdateListener(onAnimationListener);
+        mAnimator.addListener(onAnimationListener);
+    }
+
     class OnAnimationListener implements ValueAnimator.AnimatorUpdateListener, Animator.AnimatorListener{
         private boolean isVertical;
         private float toPercent;
@@ -323,7 +323,6 @@ public class BlindsView extends LinearLayout implements AnimationViewInterface{
 
         @Override
         public void onAnimationStart(Animator animation) {
-
         }
 
         @Override

@@ -10,7 +10,7 @@ import android.view.MotionEvent;
  */
 public interface AnimationViewInterface {
     /**
-     * 初始化百叶窗图片
+     * 初始化图片
      * @param frontBitmap  前景图片
      * @param backBitmap   背景图片
      */
