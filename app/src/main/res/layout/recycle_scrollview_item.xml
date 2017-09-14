@@ -7,7 +7,7 @@
         android:id="@+id/recycle_scrollview_item_img"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/banner_a" />
+        android:scaleType="fitXY"/>
 
     <ImageView
         android:id="@+id/recycle_scrollview_item_img_shade"
@@ -33,7 +33,6 @@
             android:gravity="center"
             android:shadowColor="#000000"
             android:shadowRadius="10"
-            android:text="大商电器-金州新玛特"
             android:textColor="#ffffff"
             android:textSize="18sp" />
 
@@ -55,7 +54,7 @@
                 android:layout_marginLeft="5dp"
                 android:shadowColor="#000000"
                 android:shadowRadius="10"
-                android:text="0.6公里"
+                android:text="距离0.6公里"
                 android:textColor="#ffffff"
                 android:textSize="11sp" />
         </LinearLayout>
@@ -68,13 +67,15 @@
         android:background="#bf000000"
         android:orientation="horizontal" >
 
-        <ImageView
+        <TextView
             android:id="@+id/recycle_scrollview_item_ad1"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:scaleType="fitXY"
-            android:src="@drawable/banner_b" />
+            android:gravity="center"
+            android:textColor="#ffffff"
+            android:textSize="20dp"
+            android:text="查看特价" />
 
         <FrameLayout
             android:layout_width="1dp"
@@ -83,13 +84,15 @@
             android:layout_marginTop="20dp"
             android:background="#bbbbbb" />
 
-        <ImageView
+        <TextView
             android:id="@+id/recycle_scrollview_item_ad2"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:scaleType="fitXY"
-            android:src="@drawable/banner_c" />
+            android:gravity="center"
+            android:textColor="#ffffff"
+            android:textSize="20dp"
+            android:text="优惠券" />
     </LinearLayout>
 
 </RelativeLayout>

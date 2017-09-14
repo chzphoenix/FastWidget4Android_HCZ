@@ -26,8 +26,8 @@ import com.huichongzi.fastwidget4android.utils.DisplayUtils;
 
 public class MainActivity extends Activity {
     private static final String[] names = {"循环轮播BannerView", "可拖动排序的GridView",
-            "翻转展示的ListView", "百叶窗ListView", "水晶球进度条",
-            "可回收scrollview", "仿书页", "淹没展开动画", "测试"};
+            "页面对折翻页效果", "百叶窗翻页效果", "水晶球波浪进度条",
+            "滑动改变Item大小的ListView", "仿书页", "淹没展开动画", "测试"};
     private static final Class[] clazzs = {BannerViewActivity.class, DragGridViewActivity.class,
             FolioListViewActivity.class, BlindsListViewActivity.class, WaveBallProgressActivity.class,
             RecycleScrollViewActivity.class, BookActivity.class, FloodAndSpreadActivity.class,
