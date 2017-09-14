@@ -18,7 +18,7 @@ import com.huichongzi.fastwidget4android.activity.BookActivity;
 import com.huichongzi.fastwidget4android.activity.DragGridViewActivity;
 import com.huichongzi.fastwidget4android.activity.FloodAndSpreadActivity;
 import com.huichongzi.fastwidget4android.activity.FolioListViewActivity;
-import com.huichongzi.fastwidget4android.activity.RecycleScrollViewActivity;
+import com.huichongzi.fastwidget4android.activity.ScrollFoldActivity;
 import com.huichongzi.fastwidget4android.activity.TestActivity;
 import com.huichongzi.fastwidget4android.activity.WaveBallProgressActivity;
 import com.huichongzi.fastwidget4android.utils.DisplayUtils;
@@ -30,7 +30,7 @@ public class MainActivity extends Activity {
             "滑动改变Item大小的ListView", "仿书页", "淹没展开动画", "测试"};
     private static final Class[] clazzs = {BannerViewActivity.class, DragGridViewActivity.class,
             FolioListViewActivity.class, BlindsListViewActivity.class, WaveBallProgressActivity.class,
-            RecycleScrollViewActivity.class, BookActivity.class, FloodAndSpreadActivity.class,
+            ScrollFoldActivity.class, BookActivity.class, FloodAndSpreadActivity.class,
             TestActivity.class};
 
     private ListView list;

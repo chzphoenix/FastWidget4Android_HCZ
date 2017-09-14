@@ -2,12 +2,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <com.huichongzi.fastwidget4android.widget.RecycleScrollView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/recycle_scrollview_activity_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true" >
 
-    </com.huichongzi.fastwidget4android.widget.RecycleScrollView>
+    </android.support.v7.widget.RecyclerView>
 
 </RelativeLayout>

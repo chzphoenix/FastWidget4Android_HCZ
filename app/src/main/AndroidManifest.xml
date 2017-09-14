@@ -21,7 +21,7 @@
         <activity android:name=".activity.FolioListViewActivity"/>
         <activity android:name=".activity.BlindsListViewActivity"/>
         <activity android:name=".activity.WaveBallProgressActivity"/>
-        <activity android:name=".activity.RecycleScrollViewActivity"/>
+        <activity android:name=".activity.ScrollFoldActivity"/>
         <activity android:name=".activity.BookActivity"/>
         <activity android:name=".activity.FloodAndSpreadActivity"/>
         <activity android:name=".activity.TestActivity"/>

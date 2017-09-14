@@ -1,22 +1,25 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content">
+<RelativeLayout
+    android:id="@+id/item_content"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/recycle_scrollview_item_height" >
+    android:layout_height="@dimen/scroll_fold_item_height" >
 
     <ImageView
-        android:id="@+id/recycle_scrollview_item_img"
+        android:id="@+id/item_img"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="fitXY"/>
 
     <ImageView
-        android:id="@+id/recycle_scrollview_item_img_shade"
+        android:id="@+id/item_img_shade"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:src="#000000" />
 
     <LinearLayout
-        android:id="@+id/recycle_scrollview_item_content"
+        android:id="@+id/scale_item_content"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
@@ -27,7 +30,7 @@
             android:layout_height="40dp" />
 
         <TextView
-            android:id="@+id/recycle_scrollview_item_name"
+            android:id="@+id/item_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -48,7 +51,7 @@
                 android:layout_height="12dp" />
 
             <TextView
-                android:id="@+id/recycle_scrollview_item_distance"
+                android:id="@+id/item_distance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
@@ -68,7 +71,7 @@
         android:orientation="horizontal" >
 
         <TextView
-            android:id="@+id/recycle_scrollview_item_ad1"
+            android:id="@+id/item_ad1"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -85,7 +88,7 @@
             android:background="#bbbbbb" />
 
         <TextView
-            android:id="@+id/recycle_scrollview_item_ad2"
+            android:id="@+id/item_ad2"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -96,3 +99,4 @@
     </LinearLayout>
 
 </RelativeLayout>
+</FrameLayout>

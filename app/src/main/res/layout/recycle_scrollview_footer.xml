@@ -1,27 +1,14 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="0dp"
-    android:gravity="center"
-    android:visibility="invisible" >
+    android:gravity="center">
 
-    <LinearLayout
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal" >
-
-        <ImageView
-            android:layout_width="15dp"
-            android:layout_height="15dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:text="更多门店正在努力建设中~"
-            android:textColor="#999999"
-            android:textSize="16sp" />
-    </LinearLayout>
+        android:layout_marginLeft="10dp"
+        android:text="更多门店正在努力建设中~"
+        android:textColor="#999999"
+        android:textSize="16sp" />
 
 </RelativeLayout>
