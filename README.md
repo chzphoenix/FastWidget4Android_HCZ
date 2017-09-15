@@ -19,3 +19,8 @@ It is a view which can show an animation as blind. You can use it in AnimationLi
 It is a view which can show an animation as folio. You can use it in AnimationListView, such as the used in FolioListViewActivity. Show in the gif below.
 
 ![](https://github.com/chzphoenix/FastWidget4Android_HCZ/blob/master/folio.gif)
+
+# ScrollFoldList
+It is a list view which can highlight the first item. If scroll the list, the first item will fold and the second item will spread. Show in the gif below.
+
+![](https://github.com/chzphoenix/FastWidget4Android_HCZ/blob/master/scroll-fold-list-iloveimg-compressed.gif)
