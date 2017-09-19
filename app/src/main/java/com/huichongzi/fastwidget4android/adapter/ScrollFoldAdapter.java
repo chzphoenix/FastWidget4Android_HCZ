@@ -100,7 +100,7 @@ public class ScrollFoldAdapter extends RecyclerView.Adapter<ScrollFoldAdapter.Vi
 			if(bottomParams == null){
 				bottomParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0);
 			}
-			bottomParams.height = recyclerView.getHeight() - itemSmallHeight;
+			bottomParams.height = recyclerView.getHeight() - itemHeight + 10;
 			itemView.setLayoutParams(bottomParams);
 		}
 	}
