@@ -22,7 +22,7 @@ public class ScrollFoldActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.recycle_scrollview_activity);
+		setContentView(R.layout.recyclerview_activity);
 		itemHeight = getResources().getDimensionPixelSize(
 				R.dimen.scroll_fold_item_height);
 		itemSmallHeight = (int) (itemHeight / ScrollFoldAdapter.ITEM_CONTENT_TEXT_SCALE);

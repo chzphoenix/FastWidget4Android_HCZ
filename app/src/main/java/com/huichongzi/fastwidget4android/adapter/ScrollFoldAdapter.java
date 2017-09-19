@@ -45,11 +45,11 @@ public class ScrollFoldAdapter extends RecyclerView.Adapter<ScrollFoldAdapter.Vi
 	@Override
 	public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 		if(viewType == 0) {
-			View item = LayoutInflater.from(mContext).inflate(R.layout.recycle_scrollview_item, null);
+			View item = LayoutInflater.from(mContext).inflate(R.layout.scroll_fold_list_item, null);
 			return new ItemViewHolder(item);
 		}
 		else{
-			View bottom = LayoutInflater.from(mContext).inflate(R.layout.recycle_scrollview_footer, null);
+			View bottom = LayoutInflater.from(mContext).inflate(R.layout.scroll_fold_list_footer, null);
 			return new BottomViewHolder(bottom);
 		}
 	}

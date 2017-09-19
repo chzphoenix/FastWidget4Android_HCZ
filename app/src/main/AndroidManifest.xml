@@ -24,7 +24,7 @@
         <activity android:name=".activity.ScrollFoldActivity"/>
         <activity android:name=".activity.BookActivity"/>
         <activity android:name=".activity.FloodAndSpreadActivity"/>
-        <activity android:name=".activity.TestActivity"/>
+        <activity android:name=".activity.SwipeMenuListActivity"/>
     </application>
 
 </manifest>
