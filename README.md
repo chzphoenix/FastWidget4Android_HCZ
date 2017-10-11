@@ -24,3 +24,8 @@ It is a view which can show an animation as folio. You can use it in AnimationLi
 It is a list view which can highlight the first item. If scroll the list, the first item will fold and the second item will spread. Show in the gif below.
 
 ![](https://github.com/chzphoenix/FastWidget4Android_HCZ/blob/master/scroll-fold-list-iloveimg-compressed.gif)
+
+# SwipeMenuTouchListener&SwipeMenuViewHolder
+It is a simple solution about swipe menu in RecyclerView. You can refer to the class "SwipeMenuListActivity" for how to use. Show in the gif below.
+
+![](https://github.com/chzphoenix/FastWidget4Android_HCZ/blob/master/swipe_menu_recyclerview.gif)
