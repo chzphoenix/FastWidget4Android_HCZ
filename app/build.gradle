@@ -26,7 +26,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'org.jetbrains.kotlin:kotlin-android-extensions:1.1.2-4'
+        classpath 'org.jetbrains.kotlin:kotlin-android-extensions:1.1.4-3'
     }
 }
 
@@ -34,7 +34,7 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:support-v4:25.3.0'
-    compile 'org.jetbrains.kotlin:kotlin-stdlib:1.1.2-4'
+    compile 'org.jetbrains.kotlin:kotlin-stdlib:1.1.4-3'
     compile 'org.jetbrains.anko:anko-common:0.10.0'
     compile 'com.android.support:recyclerview-v7:25.3.0'
 }

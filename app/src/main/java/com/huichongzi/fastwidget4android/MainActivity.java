@@ -21,18 +21,21 @@ import com.huichongzi.fastwidget4android.activity.FolioListViewActivity;
 import com.huichongzi.fastwidget4android.activity.ScrollFoldActivity;
 import com.huichongzi.fastwidget4android.activity.SwipeMenuListActivity;
 import com.huichongzi.fastwidget4android.activity.WaveBallProgressActivity;
+import com.huichongzi.fastwidget4android.activity.WheelActivity;
 import com.huichongzi.fastwidget4android.utils.DisplayUtils;
 
 
 public class MainActivity extends Activity {
     private static final String[] names = {
             "页面对折翻页效果", "百叶窗翻页效果", "水晶球波浪进度条",
-            "滑动折叠（喵街）列表", "仿书页", "淹没展开动画", "滑动删除的RecyclerView",
-            "循环轮播BannerView", "可拖动排序的GridView"};
+            "滑动折叠（喵街）列表", "淹没展开动画", "滑动删除的RecyclerView",
+            "轮盘效果",
+            "循环轮播BannerView", "可拖动排序的GridView", "仿书页"};
     private static final Class[] clazzs = {
             FolioListViewActivity.class, BlindsListViewActivity.class, WaveBallProgressActivity.class,
-            ScrollFoldActivity.class, BookActivity.class, FloodAndSpreadActivity.class, SwipeMenuListActivity.class,
-            BannerViewActivity.class, DragGridViewActivity.class};
+            ScrollFoldActivity.class, FloodAndSpreadActivity.class, SwipeMenuListActivity.class,
+            WheelActivity.class,
+            BannerViewActivity.class, DragGridViewActivity.class, BookActivity.class};
 
     private ListView list;
     @Override
