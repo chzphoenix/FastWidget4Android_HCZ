@@ -23,6 +23,7 @@ import com.huichongzi.fastwidget4android.activity.SwipeMenuListActivity;
 import com.huichongzi.fastwidget4android.activity.WaveBallProgressActivity;
 import com.huichongzi.fastwidget4android.activity.WheelActivity;
 import com.huichongzi.fastwidget4android.utils.DisplayUtils;
+import com.huichongzi.fastwidget4android.widget.FloatSideBall;
 
 
 public class MainActivity extends Activity {
@@ -75,5 +76,13 @@ public class MainActivity extends Activity {
                 }
             }
         });
+
+        FloatSideBall floatSideBall = new FloatSideBall(this, R.drawable.floating_add_move, R.drawable.floating_add_left, R.drawable.floating_add_right, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+        floatSideBall.showSideball();
     }
 }
