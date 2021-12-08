@@ -29,3 +29,6 @@ It is a list view which can highlight the first item. If scroll the list, the fi
 It is a simple solution about swipe menu in RecyclerView. You can refer to the class "SwipeMenuListActivity" for how to use. Show in the gif below.
 
 ![](https://github.com/chzphoenix/FastWidget4Android_HCZ/blob/master/swipe_menu_recyclerview.gif)
+
+# Contact Me
+<img src="https://github.com/chzphoenix/FastWidget4Android_HCZ/blob/master/qrinfo-BennuCTech-scan.jpg" width="45%"/><img src="https://github.com/chzphoenix/FastWidget4Android_HCZ/blob/master/Wechat.jpeg" width="45%"/>
