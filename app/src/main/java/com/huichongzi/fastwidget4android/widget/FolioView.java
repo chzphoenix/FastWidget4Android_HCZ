@@ -6,9 +6,12 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.LinearGradient;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.Shader;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -171,17 +174,27 @@ public class FolioView extends View implements AnimationViewInterface{
         canvas.drawBitmap(bottomBitmap, bottomHoldSrc, bottomHoldDst, null);
 
         /**
-         * 绘制阴影
+         * 绘制阴影(光线在正前方)
          * 阴影与翻转是在同一区域，并且根据翻转程度改变
          */
+//        Paint shadowP = new Paint();
+//        shadowP.setColor(0xff000000);
+//        shadowP.setAlpha((int) ((1 - rate) * FOLIO_SHADOW_ALPHA));
+//        if (mFolioY >= getHeight() / 2) {
+//            canvas.drawRect(bottomHoldDst, shadowP);
+//        } else {
+//            canvas.drawRect(topHoldDst, shadowP);
+//        }
+
+        /**
+         * 绘制阴影(光线在上方，更真实)
+         * 阴影一直在下面的区域，并且根据翻转程度改变范围，并渐变
+         */
+        LinearGradient gradient = new LinearGradient(0, getHeight() / 2, 0, getHeight() / 2 + mFolioY / 2, 0x80000000, Color.TRANSPARENT, Shader.TileMode.MIRROR);
         Paint shadowP = new Paint();
-        shadowP.setColor(0xff000000);
-        shadowP.setAlpha((int) ((1 - rate) * FOLIO_SHADOW_ALPHA));
-        if (mFolioY >= getHeight() / 2) {
-            canvas.drawRect(bottomHoldDst, shadowP);
-        } else {
-            canvas.drawRect(topHoldDst, shadowP);
-        }
+        shadowP.setShader(gradient);
+        Rect shadowRect = new Rect(0, getHeight() / 2, getWidth(), getHeight() / 2 + (int)mFolioY / 2);
+        canvas.drawRect(shadowRect, shadowP);
 
         /**
          * 绘制翻转效果的图片
