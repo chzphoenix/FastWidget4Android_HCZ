@@ -206,8 +206,8 @@ public class WaveBallProgress extends View {
              * 波浪的振幅根据高度和默认值，当高度太小就设为高度的一定比例，这样保证不同高度下波浪效果明显
              * 波浪的周期固定即可
              */
-            mWaveSpeedA = w / 10;
-            mWaveSpeedB = w / 17;
+            mWaveSpeedA = w / 30;
+            mWaveSpeedB = w / 51;
             mWaveHeightA = DisplayUtils.dip2px(getContext(), 10);
             mWaveHeightB = DisplayUtils.dip2px(getContext(), 5);
             if (h / 10 < mWaveHeightA) {
