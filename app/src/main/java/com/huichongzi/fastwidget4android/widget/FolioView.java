@@ -191,14 +191,14 @@ public class FolioView extends View implements AnimationViewInterface{
         float[] folioSrc = null;
         float[] folioDst = null;
         if (mFolioY >= getHeight() / 2) {
-            //当翻转位置在中部偏下时，取mTopBitmap的下半部分，同时绘制区域为一个正梯形
+            //当翻转位置在中部偏下时，取topBitmapFolie，同时绘制区域为一个正梯形
             mFolioBitmap = topBitmapFolie;
             folioDst = new float[]{0, getHeight() / 2,
                     getWidth(), getHeight() / 2,
                     rate * FOLIO_SCALE * getWidth() + getWidth(), mFolioY,
                     -rate * FOLIO_SCALE * getWidth(), mFolioY};
         } else {
-            //当翻转位置在中部偏上时，取mBottomBitmap的上半部分，同时绘制区域为一个倒梯形
+            //当翻转位置在中部偏上时，取bottomBitmapFolie，同时绘制区域为一个倒梯形
             mFolioBitmap = bottomBitmapFolie;
             folioDst = new float[]{
                     -rate * FOLIO_SCALE * getWidth(), mFolioY,
