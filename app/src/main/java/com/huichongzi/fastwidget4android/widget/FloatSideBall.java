@@ -9,6 +9,7 @@ import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PixelFormat;
+import android.os.Build;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
@@ -120,7 +121,12 @@ public class FloatSideBall {
         win_params = new WindowManager.LayoutParams();
         win_params.height = width;
         win_params.width = width;
-        win_params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            win_params.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+        }
+        else {
+            win_params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
+        }
         win_params.format = PixelFormat.TRANSPARENT;
         win_params.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
         win_params.gravity = Gravity.LEFT | Gravity.TOP;

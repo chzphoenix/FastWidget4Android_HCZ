@@ -30,7 +30,7 @@ public class AnimationListView extends FrameLayout{
     /**
      * 执行过场动画的view
      */
-    protected AnimationViewInterface mAnimationView;
+    public AnimationViewInterface mAnimationView;
 
     /**
      * 缓存的item
@@ -208,7 +208,7 @@ public class AnimationListView extends FrameLayout{
      * 实际上是添加移除的动作
      * @param visible
      */
-    protected void setAnimationViewVisible(boolean visible) {
+    public void setAnimationViewVisible(boolean visible) {
         if(mAnimationView == null){
             return;
         }
@@ -390,7 +390,7 @@ public class AnimationListView extends FrameLayout{
      * 装载或切换前景背景图
      * @param percent
      */
-    private void switchAniamtionBitmap(float percent){
+    public void switchAniamtionBitmap(float percent){
         //如果当前为初始状态即未翻转，或转变了翻转方向则需切换背景图
         if(mAnimationView.getAnimationPercent() == 0
                 || mAnimationView.getAnimationPercent() * percent < 0) {
@@ -420,7 +420,7 @@ public class AnimationListView extends FrameLayout{
      * 创建动画组件
      * 如果组件以及存在且type一样，则不再创建新的
      */
-    private void createAnimationView(){
+    public void createAnimationView(){
         if(mAnimationView == null){
             try {
                 Constructor<? extends AnimationViewInterface> constructor = animationClass.getConstructor(Context.class);

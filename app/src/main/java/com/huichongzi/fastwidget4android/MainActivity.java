@@ -2,7 +2,9 @@ package com.huichongzi.fastwidget4android;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -77,6 +79,17 @@ public class MainActivity extends Activity {
             }
         });
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if(Settings.canDrawOverlays(this)) {
+                showFloatBall();
+            }
+        }
+        else{
+            showFloatBall();
+        }
+    }
+
+    private void showFloatBall(){
         FloatSideBall floatSideBall = new FloatSideBall(this, R.drawable.floating_add_move, R.drawable.floating_add_left, R.drawable.floating_add_right, new View.OnClickListener() {
             @Override
             public void onClick(View view) {

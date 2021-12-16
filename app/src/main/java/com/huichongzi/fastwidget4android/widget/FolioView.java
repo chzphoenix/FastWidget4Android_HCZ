@@ -40,13 +40,22 @@ public class FolioView extends View implements AnimationViewInterface{
     private long mduration = 2000;
 
     /**
-     * 前景图
+     * 前景图上半部分
      */
-    private Bitmap mFrontBitmap;
+    private Bitmap mFrontBitmapTop;
     /**
-     * 背景图
+     * 背景图上半部分
      */
-    private Bitmap mBackBitmap;
+    private Bitmap mBackBitmapTop;
+
+    /**
+     * 前景图下半部分
+     */
+    private Bitmap mFrontBitmapBottom;
+    /**
+     * 背景图上半部分
+     */
+    private Bitmap mBackBitmapBottom;
     /**
      * 翻转中的图片
      * 根据情况，会是mTopBitmap的下半部分或上半部分
@@ -81,8 +90,11 @@ public class FolioView extends View implements AnimationViewInterface{
 
     @Override
     public void setBitmap(Bitmap frontBitmap, Bitmap backBitmap) {
-        mFrontBitmap = frontBitmap;
-        mBackBitmap = backBitmap;
+        mFrontBitmapTop = Bitmap.createBitmap(frontBitmap, 0, 0, frontBitmap.getWidth(), frontBitmap.getHeight() / 2);
+        mBackBitmapTop = Bitmap.createBitmap(backBitmap, 0, 0, backBitmap.getWidth(), backBitmap.getHeight() / 2);
+
+        mFrontBitmapBottom = Bitmap.createBitmap(frontBitmap, 0, frontBitmap.getHeight() / 2, frontBitmap.getWidth(), frontBitmap.getHeight() / 2);
+        mBackBitmapBottom = Bitmap.createBitmap(backBitmap, 0, backBitmap.getHeight() / 2, backBitmap.getWidth(), backBitmap.getHeight() / 2);
     }
 
 
@@ -104,7 +116,7 @@ public class FolioView extends View implements AnimationViewInterface{
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if (mFrontBitmap == null || mBackBitmap == null) {
+        if (mFrontBitmapTop == null || mBackBitmapTop == null) {
             return;
         }
         if(getHeight() <= 0){
@@ -126,28 +138,35 @@ public class FolioView extends View implements AnimationViewInterface{
          */
         Bitmap topBitmap = null;
         Bitmap bottomBitmap = null;
+
+        Bitmap topBitmapFolie = null;
+        Bitmap bottomBitmapFolie = null;
         if(mCurrentPercent < 0){
-            topBitmap = mFrontBitmap;
-            bottomBitmap = mBackBitmap;
+            topBitmap = mFrontBitmapTop;
+            bottomBitmap = mBackBitmapBottom;
+            topBitmapFolie = mFrontBitmapBottom;
+            bottomBitmapFolie = mBackBitmapTop;
         }
         else if(mCurrentPercent > 0){
-            topBitmap = mBackBitmap;
-            bottomBitmap = mFrontBitmap;
+            topBitmap = mBackBitmapTop;
+            bottomBitmap = mFrontBitmapBottom;
+            topBitmapFolie = mBackBitmapBottom;
+            bottomBitmapFolie = mFrontBitmapTop ;
         }
         if (topBitmap == null || bottomBitmap == null) {
             return;
         }
         /**
-         * 在上半部分绘制topBitmap的上半
+         * 在上半部分绘制topBitmap
          */
-        Rect topHoldSrc = new Rect(0, 0, topBitmap.getWidth(), topBitmap.getHeight() / 2);
+        Rect topHoldSrc = new Rect(0, 0, topBitmap.getWidth(), topBitmap.getHeight());
         Rect topHoldDst = new Rect(0, 0, getWidth(), getHeight() / 2);
         canvas.drawBitmap(topBitmap, topHoldSrc, topHoldDst, null);
 
         /**
-         * 在下半部分绘制bottomBitmap的下半
+         * 在下半部分绘制bottomBitmap
          */
-        Rect bottomHoldSrc = new Rect(0, bottomBitmap.getHeight() / 2, bottomBitmap.getWidth(), mBackBitmap.getHeight());
+        Rect bottomHoldSrc = new Rect(0, 0, bottomBitmap.getWidth(), bottomBitmap.getHeight());
         Rect bottomHoldDst = new Rect(0, getHeight() / 2, getWidth(), getHeight());
         canvas.drawBitmap(bottomBitmap, bottomHoldSrc, bottomHoldDst, null);
 
@@ -171,19 +190,16 @@ public class FolioView extends View implements AnimationViewInterface{
         mFolioBitmap = null;
         float[] folioSrc = null;
         float[] folioDst = null;
-        int startY = 0;
         if (mFolioY >= getHeight() / 2) {
             //当翻转位置在中部偏下时，取mTopBitmap的下半部分，同时绘制区域为一个正梯形
-            mFolioBitmap = topBitmap;
-            startY = mFolioBitmap.getHeight() / 2;
+            mFolioBitmap = topBitmapFolie;
             folioDst = new float[]{0, getHeight() / 2,
                     getWidth(), getHeight() / 2,
                     rate * FOLIO_SCALE * getWidth() + getWidth(), mFolioY,
                     -rate * FOLIO_SCALE * getWidth(), mFolioY};
         } else {
             //当翻转位置在中部偏上时，取mBottomBitmap的上半部分，同时绘制区域为一个倒梯形
-            mFolioBitmap = bottomBitmap;
-            startY = 0;
+            mFolioBitmap = bottomBitmapFolie;
             folioDst = new float[]{
                     -rate * FOLIO_SCALE * getWidth(), mFolioY,
                     rate * FOLIO_SCALE * getWidth() + getWidth(), mFolioY,
@@ -191,7 +207,6 @@ public class FolioView extends View implements AnimationViewInterface{
                     0, getHeight() / 2
             };
         }
-        mFolioBitmap = Bitmap.createBitmap(mFolioBitmap, 0, startY, mFolioBitmap.getWidth(), mFolioBitmap.getHeight() / 2);
         folioSrc = new float[]{0, 0,
                 mFolioBitmap.getWidth(), 0,
                 mFolioBitmap.getWidth(), mFolioBitmap.getHeight(),
