@@ -56,7 +56,7 @@ public class FolioView extends View implements AnimationViewInterface{
      */
     private Bitmap mFrontBitmapBottom;
     /**
-     * 背景图上半部分
+     * 背景图下半部分
      */
     private Bitmap mBackBitmapBottom;
     /**
