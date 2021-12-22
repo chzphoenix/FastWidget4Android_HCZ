@@ -7,7 +7,7 @@
     <application
         android:allowBackup="true"
         android:supportsRtl="true"
-        android:theme="@android:style/Theme.Light.NoTitleBar"
+        android:theme="@android:style/Theme.Holo.Light"
         android:label="@string/app_name">
         <activity
             android:name=".MainActivity">
@@ -28,6 +28,7 @@
         <activity android:name=".activity.SwipeMenuListActivity"/>
         <activity android:name=".activity.WheelActivity"/>
         <activity android:name=".activity.CurveFolioListViewActivity"/>
+        <activity android:name=".activity.SpinnerActivity"/>
     </application>
 
 </manifest>
