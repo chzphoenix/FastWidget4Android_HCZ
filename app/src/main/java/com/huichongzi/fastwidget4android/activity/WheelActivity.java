@@ -53,6 +53,7 @@ public class WheelActivity extends Activity{
 		spaceAngle = circleAngle / images.length;
 
 		RelativeLayout layout = new RelativeLayout(this);
+		layout.setBackgroundResource(R.drawable.bg1);
 		layout.setOnClickListener(new OnClickListener(){
 			public void onClick(View view) {
 				WheelActivity.this.finish();

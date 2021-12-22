@@ -7,7 +7,7 @@
         xmlns:myapp="http://schemas.android.com/apk/res/com.huichongzi.fastwidget4android"
         android:id="@+id/banner_act_viewpager"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="200dp"
         myapp:titlePaddingLeft="5dp"
         myapp:titlePaddingTop="5dp"
         myapp:titlePaddingBottom="5dp"
