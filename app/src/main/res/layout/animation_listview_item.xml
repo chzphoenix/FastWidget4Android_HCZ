@@ -23,7 +23,7 @@
         android:id="@+id/animation_listview_item_img"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:scaleType="fitXY"
+        android:scaleType="centerCrop"
         android:src="@drawable/banner_a"/>
 
     <TextView

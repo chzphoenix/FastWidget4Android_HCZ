@@ -36,6 +36,7 @@ public class BannerViewActivity extends Activity {
 				item = new ImageView(BannerViewActivity.this);
 			}
 			((ImageView)item).setImageResource(imgs[position]);
+			((ImageView)item).setScaleType(ImageView.ScaleType.CENTER_CROP);
 			return item;
 		}
 
